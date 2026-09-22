@@ -74,23 +74,23 @@
       max-width: 1120px;
       margin: 0 auto;
       min-height: 72px;
-      padding: 12px clamp(16px, 4vw, 32px);
+      padding: 10px clamp(12px, 4vw, 24px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
     }
 
     .brand-logo {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 12px;
       background: var(--blue);
       display: flex;
@@ -102,7 +102,7 @@
     }
 
     .brand h1 {
-      font-size: clamp(19px, 3vw, 24px);
+      font-size: clamp(18px, 3vw, 22px);
       line-height: 1.2;
     }
 
@@ -119,7 +119,7 @@
       background: var(--green-soft);
       color: var(--green);
       border-radius: 999px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       white-space: nowrap;
     }
@@ -134,21 +134,19 @@
     main.page {
       max-width: 1120px;
       margin: 0 auto;
-      padding: clamp(18px, 4vw, 40px);
+      padding: clamp(14px, 3vw, 24px);
     }
 
     .intro {
       display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: end;
-      gap: 24px;
-      margin-bottom: 22px;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .intro h2 {
-      font-size: clamp(26px, 4vw, 36px);
+      font-size: clamp(22px, 3.6vw, 30px);
       line-height: 1.2;
-      margin-bottom: 8px;
     }
 
     .intro p {
@@ -159,18 +157,18 @@
     .progress-wrap {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 20px;
-      margin-bottom: 20px;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
       box-shadow: var(--shadow-sm);
     }
 
     .progress-head {
       display: flex;
       justify-content: space-between;
-      gap: 16px;
-      font-size: 14px;
-      margin-bottom: 10px;
+      gap: 12px;
+      font-size: 13px;
+      margin-bottom: 8px;
     }
 
     .progress-head strong {
@@ -178,7 +176,7 @@
     }
 
     .progress {
-      height: 8px;
+      height: 6px;
       background: var(--offset);
       border-radius: 999px;
       overflow: hidden;
@@ -189,14 +187,14 @@
       width: 20%;
       background: var(--blue);
       border-radius: inherit;
-      transition: width .35s ease;
+      transition: width .25s ease;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 280px;
-      gap: 20px;
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 16px;
+      align-items: flex-start;
     }
 
     .form-card,
@@ -212,32 +210,32 @@
     }
 
     .form-head {
-      padding: 24px clamp(18px, 4vw, 32px);
+      padding: 16px clamp(14px, 3vw, 24px);
       background: var(--surface-2);
       border-bottom: 1px solid var(--border);
     }
 
     .step-kicker {
       color: var(--blue);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .form-head h3 {
-      font-size: clamp(21px, 3vw, 26px);
+      font-size: 18px;
     }
 
     .form-head p {
       color: var(--muted);
-      font-size: 14px;
-      margin-top: 5px;
+      font-size: 13px;
+      margin-top: 4px;
     }
 
     .form-body {
-      padding: clamp(20px, 4vw, 32px);
+      padding: clamp(14px, 3vw, 24px);
     }
 
     .step {
@@ -246,13 +244,13 @@
 
     .step.active {
       display: block;
-      animation: enter .24s ease;
+      animation: enter .18s ease;
     }
 
     @keyframes enter {
       from {
         opacity: 0;
-        transform: translateY(6px);
+        transform: translateY(4px);
       }
       to {
         opacity: 1;
@@ -263,7 +261,9 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
+      gap: 12px;
+      margin-bottom: 10px;
+      align-items: flex-start;
     }
 
     .grid.full {
@@ -272,18 +272,21 @@
 
     .grid.three {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: flex-start;
     }
 
     .field {
       min-width: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .field label,
     .group-label {
       display: block;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .required {
@@ -294,18 +297,18 @@
     .hint {
       font-size: 12px;
       color: var(--muted);
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     input,
     select,
     textarea {
       width: 100%;
-      min-height: 48px;
+      min-height: 40px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: var(--surface);
-      padding: 11px 13px;
+      padding: 9px 11px;
       font-size: 14px;
     }
 
@@ -318,14 +321,15 @@
     }
 
     textarea {
-      min-height: 104px;
+      min-height: 80px;
       resize: vertical;
     }
 
     .options {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
     .options.three {
@@ -335,16 +339,17 @@
     .option {
       position: relative;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 48px;
-      padding: 10px 12px;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 8px;
+      min-height: 40px;
+      padding: 8px 10px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: var(--surface-2);
       cursor: pointer;
       user-select: none;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .option:hover {
@@ -352,11 +357,12 @@
     }
 
     .option input {
-      width: 19px;
-      height: 19px;
+      width: 18px;
+      height: 18px;
       min-height: auto;
       flex: 0 0 auto;
       accent-color: var(--blue);
+      margin-top: 2px;
     }
 
     .option.has-input:has(input:checked) {
@@ -375,15 +381,15 @@
     }
 
     .vitals {
-      padding: 18px;
+      padding: 12px;
       background: var(--surface-2);
       border-radius: 12px;
     }
 
     .error-box {
       display: none;
-      margin: 0 0 18px;
-      padding: 12px 14px;
+      margin: 0 0 12px;
+      padding: 10px 12px;
       border-radius: 10px;
       background: var(--red-soft);
       color: var(--red);
@@ -398,23 +404,23 @@
     .actions {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
-      padding: 18px clamp(18px, 4vw, 32px);
+      gap: 10px;
+      padding: 12px clamp(14px, 3vw, 24px);
       border-top: 1px solid var(--border);
       background: var(--surface-2);
     }
 
     .button {
-      min-height: 48px;
+      min-height: 40px;
       border: 0;
       border-radius: 10px;
-      padding: 11px 20px;
+      padding: 9px 16px;
       font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      font-size: 14px;
+      gap: 6px;
+      font-size: 13px;
       cursor: pointer;
     }
 
@@ -454,7 +460,7 @@
     .success-panel {
       display: none;
       text-align: center;
-      padding: clamp(40px, 8vw, 76px) 20px;
+      padding: 30px 16px;
     }
 
     .success-panel.show {
@@ -462,36 +468,62 @@
     }
 
     .success-mark {
-      width: 76px;
-      height: 76px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
       background: var(--green-soft);
       color: var(--green);
     }
 
+    .summary {
+      text-align: left;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .summary-section {
+      margin-bottom: 10px;
+    }
+
+    .summary-section h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .summary-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .summary-list li {
+      margin-bottom: 2px;
+    }
+
     .aside {
       display: grid;
-      gap: 14px;
+      gap: 10px;
       position: sticky;
-      top: 94px;
+      top: 80px;
     }
 
     .aside-card {
-      padding: 20px;
+      padding: 14px;
       box-shadow: var(--shadow-sm);
     }
 
     .aside-card h3 {
-      font-size: 16px;
-      margin-bottom: 10px;
+      font-size: 15px;
+      margin-bottom: 6px;
     }
 
     .aside-card p,
     .aside-card li {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--muted);
     }
 
@@ -499,8 +531,8 @@
       text-align: center;
       color: var(--muted);
       font-size: 12px;
-      padding: 24px 16px;
-      margin-top: 32px;
+      padding: 18px 12px 24px;
+      margin-top: 18px;
     }
 
     @media (max-width: 900px) {
@@ -509,7 +541,6 @@
       }
       .aside {
         position: static;
-        grid-template-columns: 1fr;
       }
       .grid,
       .grid.three {
@@ -529,24 +560,39 @@
         display: none;
       }
       main.page {
-        padding: 16px 12px 28px;
+        padding: 10px 10px 20px;
       }
       .intro {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        align-items: start;
+        gap: 8px;
+      }
+      .progress-wrap {
+        margin-bottom: 10px;
+      }
+      .form-head {
+        padding: 12px 14px;
+      }
+      .form-body {
+        padding: 12px 14px;
       }
       .actions {
         position: sticky;
         bottom: 0;
         z-index: 10;
-        padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
         box-shadow: 0 -8px 22px rgba(22, 54, 82, 0.08);
       }
       .button {
         flex: 1;
-        padding-inline: 12px;
+        padding-inline: 10px;
       }
+    }
+
+    .honeypot {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
     }
   </style>
 </head>
@@ -555,7 +601,7 @@
     <div class="topbar-inner">
       <div class="brand">
         <div class="brand-logo">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M12 5v14M5 12h14"></path>
           </svg>
         </div>
@@ -593,14 +639,7 @@
     </section>
 
     <section class="layout">
-      <form
-        class="form-card"
-        id="emsForm"
-        method="POST"
-        action="https://script.google.com/macros/s/AKfycbwvFC4Rjk4vubXJrita0QC2S6w5hrj7u39VQiIMTFJEMaSerufyELJV_ERImReiWf-V2A/exec"
-        target="emsFrame"
-        novalidate
-      >
+      <section class="form-card" id="formRoot">
         <div id="formContent">
           <header class="form-head">
             <div class="step-kicker" id="stepKicker">01</div>
@@ -609,20 +648,18 @@
           </header>
 
           <div class="form-body">
-            <div class="error-box" id="errorBox" role="alert" tabindex="-1"></div>
+            <div class="error-box" id="errorBox" role="alert"></div>
 
-            <input type="text" id="website" name="website" class="honeypot" autocomplete="off" aria-hidden="true" />
+            <input type="text" id="website" class="honeypot" autocomplete="off" aria-hidden="true" />
 
-            <input type="hidden" name="payload" id="payloadField" />
-
-            <!-- Step 1 -->
+            <!-- Step 1：事件資訊 -->
             <section class="step active" data-step="0">
               <div class="grid">
                 <div class="field">
                   <label for="firstContactTime">
                     首次接觸時間<span class="required">*</span>
                   </label>
-                  <input type="datetime-local" id="firstContactTime" required />
+                  <input type="datetime-local" id="firstContactTime" />
                   <p class="hint">以現場救護人員首次接觸受助者的時間為準。</p>
                 </div>
 
@@ -630,7 +667,7 @@
                   <label for="location">
                     地點（醫療位置）<span class="required">*</span>
                   </label>
-                  <select id="location" required>
+                  <select id="location">
                     <option value="">請選擇</option>
                     <option value="起點醫療站">起點醫療站</option>
                     <option value="終點醫療站">終點醫療站</option>
@@ -656,7 +693,7 @@
                   <label for="reportSource">
                     通報來源<span class="required">*</span>
                   </label>
-                  <select id="reportSource" required>
+                  <select id="reportSource">
                     <option value="">請選擇</option>
                     <option value="受助者自行求助">受助者自行求助</option>
                     <option value="工作人員">工作人員</option>
@@ -676,14 +713,14 @@
               </div>
             </section>
 
-            <!-- Step 2 -->
+            <!-- Step 2：受助者資料與病史 -->
             <section class="step" data-step="1">
               <div class="grid">
                 <div class="field">
                   <label for="personType">
                     受助者身分<span class="required">*</span>
                   </label>
-                  <select id="personType" required>
+                  <select id="personType">
                     <option value="">請選擇</option>
                     <option value="參賽選手">參賽選手</option>
                     <option value="工作人員">工作人員</option>
@@ -779,7 +816,7 @@
               </div>
             </section>
 
-            <!-- Step 3 -->
+            <!-- Step 3：症狀與事件機轉 -->
             <section class="step" data-step="2">
               <fieldset class="field grid full">
                 <legend class="group-label">
@@ -868,7 +905,7 @@
               </div>
             </section>
 
-            <!-- Step 4 -->
+            <!-- Step 4：生命徵象與處置 -->
             <section class="step" data-step="3">
               <fieldset class="field grid full">
                 <legend class="group-label">
@@ -890,27 +927,27 @@
                 <div class="grid three">
                   <div class="field">
                     <label for="heartRate">心率（下每分鐘）</label>
-                    <input type="number" id="heartRate" inputmode="numeric" min="20" max="300" placeholder="例：88" />
+                    <input type="number" id="heartRate" inputmode="numeric" min="20" max="300" />
                   </div>
                   <div class="field">
                     <label for="systolic">收縮壓（mmHg）</label>
-                    <input type="number" id="systolic" inputmode="numeric" min="40" max="300" placeholder="例：120" />
+                    <input type="number" id="systolic" inputmode="numeric" min="40" max="300" />
                   </div>
                   <div class="field">
                     <label for="diastolic">舒張壓（mmHg）</label>
-                    <input type="number" id="diastolic" inputmode="numeric" min="20" max="200" placeholder="例：80" />
+                    <input type="number" id="diastolic" inputmode="numeric" min="20" max="200" />
                   </div>
                   <div class="field">
                     <label for="spo2">SpO2（%）</label>
-                    <input type="number" id="spo2" inputmode="numeric" min="50" max="100" placeholder="例：98" />
+                    <input type="number" id="spo2" inputmode="numeric" min="50" max="100" />
                   </div>
                   <div class="field">
                     <label for="temperature">體溫（°C）</label>
-                    <input type="number" id="temperature" inputmode="decimal" min="30" max="45" step="0.1" placeholder="例：36.8" />
+                    <input type="number" id="temperature" inputmode="decimal" min="30" max="45" step="0.1" />
                   </div>
                   <div class="field">
                     <label for="glucose">血糖（mg/dL）</label>
-                    <input type="number" id="glucose" inputmode="numeric" min="20" max="800" placeholder="例：105" />
+                    <input type="number" id="glucose" inputmode="numeric" min="20" max="800" />
                   </div>
                 </div>
               </div>
@@ -920,7 +957,7 @@
                   <label for="participationAdvice">
                     參賽建議<span class="required">*</span>
                   </label>
-                  <select id="participationAdvice" required>
+                  <select id="participationAdvice">
                     <option value="">請選擇</option>
                     <option value="可繼續參賽">可繼續參賽</option>
                     <option value="休息後再評估">休息後再評估</option>
@@ -996,7 +1033,7 @@
                   <label for="destination">
                     後續去向<span class="required">*</span>
                   </label>
-                  <select id="destination" required>
+                  <select id="destination">
                     <option value="">請選擇</option>
                     <option value="原地離開">原地離開</option>
                     <option value="返回賽道">返回賽道</option>
@@ -1016,7 +1053,7 @@
               </div>
             </section>
 
-            <!-- Step 5 -->
+            <!-- Step 5：交班補充與回報摘要 -->
             <section class="step" data-step="4">
               <div class="grid">
                 <div class="field grid full">
@@ -1035,30 +1072,32 @@
                   <input
                     type="text"
                     id="reporter"
-                    required
                     autocomplete="name"
                     placeholder="例：現場救護員姓名或代號"
                   />
                 </div>
+              </div>
+
+              <hr style="margin:12px 0; border:none; border-top:1px solid var(--border);" />
+
+              <div class="summary" id="summaryBlock">
+                <!-- 送出前摘要會由 JS 動態生成 -->
               </div>
             </section>
           </div>
 
           <section class="success-panel" id="successPanel" aria-live="polite">
             <div class="success-mark">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M5 12l4 4L19 6"></path>
               </svg>
             </div>
             <h3>回報已完成</h3>
             <p>資料已寫入零捌玖救護協會後台資料庫，用於後續統計與作業檢討。</p>
-            <button class="button primary" type="button" id="newReportButton" style="margin-top: 24px;">
-              新增下一筆回報
-            </button>
           </section>
 
           <section class="actions">
-            <button class="button secondary" type="button" id="prevButton" disabled>
+            <button class="button secondary" type="button" id="prevButton">
               上一步
             </button>
 
@@ -1067,11 +1106,11 @@
             </button>
 
             <button class="button success" type="button" id="submitButton" style="display:none;">
-              <span class="submit-label">確認送出</span>
+              確認送出
             </button>
           </section>
         </div>
-      </form>
+      </section>
 
       <aside class="aside" aria-label="表單說明">
         <section class="aside-card">
@@ -1097,22 +1136,14 @@
     </footer>
   </main>
 
-  <iframe name="emsFrame" id="emsFrame" style="display:none;"></iframe>
-
   <script>
     (function () {
-      const stepMeta = [
-        ['事件資訊', '記錄首次接觸時間、地點與通報來源，作為後續統計與追蹤的基礎。'],
-        ['受助者資料與病史', '填寫身分、號碼布、過去病史與過敏史。'],
-        ['症狀與事件機轉', '紀錄主訴症狀與事件發生情境。'],
-        ['生命徵象與處置', '填寫生命徵象、現場處置與後續安排。'],
-        ['交班補充與回報', '補充交班內容，確認回報人員資訊。']
-      ];
+      const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwvFC4Rjk4vubXJrita0QC2S6w5hrj7u39VQiIMTFJEMaSerufyELJV_ERImReiWf-V2A/exec';
+      const TOKEN = 'EMS-Q7v!N2xR9#kL4mT8@wC6pY1dF3sH5jA0';
 
       let currentStep = 0;
       let isSubmitting = false;
 
-      const form = document.getElementById('emsForm');
       const steps = document.querySelectorAll('.step');
       const stepKicker = document.getElementById('stepKicker');
       const stepTitle = document.getElementById('stepTitle');
@@ -1126,32 +1157,41 @@
       const errorBox = document.getElementById('errorBox');
       const successPanel = document.getElementById('successPanel');
       const formContent = document.getElementById('formContent');
-      const newReportButton = document.getElementById('newReportButton');
-      const payloadField = document.getElementById('payloadField');
       const statusChip = document.getElementById('statusChip');
+      const summaryBlock = document.getElementById('summaryBlock');
+      const website = document.getElementById('website');
 
+      const stepMeta = [
+        ['事件資訊', '記錄首次接觸時間、地點與通報來源，作為後續統計與追蹤的基礎。'],
+        ['受助者資料與病史', '填寫身分、號碼布、過去病史與過敏史。'],
+        ['症狀與事件機轉', '紀錄主訴症狀與事件發生情境。'],
+        ['生命徵象與處置', '填寫生命徵象、現場處置與後續安排。'],
+        ['交班補充與摘要', '補充交班內容，確認回報人員資訊，送出前檢視完整紀錄。']
+      ];
+
+      function localNow() {
+        const d = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000));
+        return d.toISOString().slice(0, 16);
+      }
       const firstContactTime = document.getElementById('firstContactTime');
+      firstContactTime.value = localNow();
+
       const location = document.getElementById('location');
       const otherLocationWrap = document.getElementById('otherLocationWrap');
       const otherLocation = document.getElementById('otherLocation');
+
       const reportSource = document.getElementById('reportSource');
       const otherReportSourceWrap = document.getElementById('otherReportSourceWrap');
       const otherReportSource = document.getElementById('otherReportSource');
-      const vitalsWrap = document.getElementById('vitalsWrap');
-      const notificationDetailWrap = document.getElementById('notificationDetailWrap');
-      const notificationDetail = document.getElementById('notificationDetail');
+
       const destination = document.getElementById('destination');
       const otherDestinationWrap = document.getElementById('otherDestinationWrap');
       const otherDestination = document.getElementById('otherDestination');
+
+      const notificationDetailWrap = document.getElementById('notificationDetailWrap');
+      const notificationDetail = document.getElementById('notificationDetail');
+      const vitalsWrap = document.getElementById('vitalsWrap');
       const reporter = document.getElementById('reporter');
-      const website = document.getElementById('website');
-
-      function localNow() {
-        const date = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000));
-        return date.toISOString().slice(0, 16);
-      }
-
-      firstContactTime.value = localNow();
 
       function toggleSelect(selectEl, wrapEl, value) {
         function update() {
@@ -1177,24 +1217,16 @@
         });
       });
 
-      function showError(message, element) {
+      function showError(message) {
         errorBox.textContent = message;
         errorBox.classList.add('show');
-        errorBox.focus();
         statusChip.textContent = '送出失敗，請檢查表單';
-        statusChip.classList.add('error');
-        if (element) {
-          element.focus();
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return false;
       }
 
       function clearError() {
         errorBox.textContent = '';
         errorBox.classList.remove('show');
         statusChip.textContent = '系統可正常登錄';
-        statusChip.classList.remove('error');
       }
 
       function checkedValues(groupName) {
@@ -1220,76 +1252,55 @@
         const treatments = checkedValues('treatments');
         const vitalsMeasured = radioValue('vitalsMeasured');
         const medicalNotified = radioValue('medicalNotified');
+        const participationAdvice = document.getElementById('participationAdvice').value;
+        const personType = document.getElementById('personType').value;
 
         if (index === 0) {
-          if (!value(firstContactTime)) return showError('請填寫首次接觸時間。', firstContactTime);
-          if (!location.value) return showError('請填寫地點（醫療位置）。', location);
+          if (!value(firstContactTime)) return showError('請填寫首次接觸時間。');
+          if (!location.value) return showError('請填寫地點（醫療位置）。');
           if (location.value === '其他' && !value(otherLocation)) {
-            return showError('地點選擇「其他」時，請填寫其他地點說明。', otherLocation);
+            return showError('地點選擇「其他」時，請填寫其他地點說明。');
           }
-          if (!reportSource.value) return showError('請填寫通報來源。', reportSource);
+          if (!reportSource.value) return showError('請填寫通報來源。');
           if (reportSource.value === '其他' && !value(otherReportSource)) {
-            return showError('通報來源選擇「其他」時，請填寫其他通報來源。', otherReportSource);
+            return showError('通報來源選擇「其他」時，請填寫其他通報來源。');
           }
         }
 
         if (index === 1) {
-          if (!document.getElementById('personType').value) {
-            return showError('請填寫受助者身分。', document.getElementById('personType'));
-          }
+          if (!personType) return showError('請填寫受助者身分。');
         }
 
         if (index === 2) {
-          if (!symptoms.length) {
-            const el = document.querySelector('[data-group="symptoms"] input');
-            return showError('請至少勾選一項主訴及傷病症狀。', el);
-          }
-          if (!mechanisms.length) {
-            const el = document.querySelector('[data-group="mechanisms"] input');
-            return showError('請至少勾選一項事件機轉及情境。', el);
-          }
+          if (!symptoms.length) return showError('請至少勾選一項主訴及傷病症狀。');
+          if (!mechanisms.length) return showError('請至少勾選一項事件機轉及情境。');
           if (symptoms.includes('其他') && !value(document.getElementById('otherSymptom'))) {
-            return showError('症狀勾選「其他」時，請填寫其他症狀說明。', document.getElementById('otherSymptom'));
+            return showError('症狀勾選「其他」時，請填寫其他症狀說明。');
           }
           if (mechanisms.includes('其他') && !value(document.getElementById('otherMechanism'))) {
-            return showError('事件機轉勾選「其他」時，請填寫其他事件機轉說明。', document.getElementById('otherMechanism'));
+            return showError('事件機轉勾選「其他」時，請填寫其他事件機轉說明。');
           }
         }
 
         if (index === 3) {
-          if (!vitalsMeasured) {
-            const el = document.querySelector('input[name="vitalsMeasured"]');
-            return showError('請填寫是否已量測生命徵象。', el);
-          }
-          if (!document.getElementById('participationAdvice').value) {
-            return showError('請填寫參賽建議。', document.getElementById('participationAdvice'));
-          }
-          if (!treatments.length) {
-            const el = document.querySelector('[data-group="treatments"] input');
-            return showError('請至少勾選一項現場簡易處置。', el);
-          }
+          if (!vitalsMeasured) return showError('請填寫是否已量測生命徵象。');
+          if (!participationAdvice) return showError('請填寫參賽建議。');
+          if (!treatments.length) return showError('請至少勾選一項現場簡易處置。');
           if (treatments.includes('其他') && !value(document.getElementById('otherTreatment'))) {
-            return showError('處置勾選「其他」時，請填寫其他處置說明。', document.getElementById('otherTreatment'));
+            return showError('處置勾選「其他」時，請填寫其他處置說明。');
           }
-          if (!medicalNotified) {
-            const el = document.querySelector('input[name="medicalNotified"]');
-            return showError('請填寫是否已通知醫療人員。', el);
-          }
+          if (!medicalNotified) return showError('請填寫是否已通知醫療人員。');
           if (medicalNotified === '是' && !value(notificationDetail)) {
-            return showError('已通知醫療人員時，請填寫通知對象及時間。', notificationDetail);
+            return showError('已通知醫療人員時，請填寫通知對象及時間。');
           }
-          if (!destination.value) {
-            return showError('請填寫後續去向。', destination);
-          }
+          if (!destination.value) return showError('請填寫後續去向。');
           if (destination.value === '其他' && !value(otherDestination)) {
-            return showError('後續去向選擇「其他」時，請填寫其他去向說明。', otherDestination);
+            return showError('後續去向選擇「其他」時，請填寫其他去向說明。');
           }
         }
 
         if (index === 4) {
-          if (!value(reporter)) {
-            return showError('請填寫回報人員。', reporter);
-          }
+          if (!value(reporter)) return showError('請填寫回報人員。');
         }
 
         return true;
@@ -1314,6 +1325,10 @@
         submitButton.style.display = currentStep === 4 ? 'inline-flex' : 'none';
         nextButton.disabled = isSubmitting;
         submitButton.disabled = isSubmitting;
+
+        if (currentStep === 4) {
+          buildSummary();
+        }
       }
 
       nextButton.addEventListener('click', () => {
@@ -1379,7 +1394,84 @@
         payload.mechanisms = checkedValues('mechanisms');
         payload.treatments = checkedValues('treatments');
 
+        payload.token = TOKEN;
+
         return payload;
+      }
+
+      function buildSummary() {
+        const data = buildPayload();
+
+        function orBlank(v) {
+          return v ? v : '未填寫';
+        }
+
+        function listOrBlank(arr) {
+          return arr && arr.length ? arr.join('、') : '未填寫';
+        }
+
+        const html = `
+          <div class="summary-section">
+            <h4>事件資訊</h4>
+            <ul class="summary-list">
+              <li>首次接觸時間：${orBlank(data.firstContactTime)}</li>
+              <li>地點（醫療位置）：${orBlank(data.location)}</li>
+              <li>其他地點說明：${orBlank(data.otherLocation)}</li>
+              <li>賽道位置：${orBlank(data.trackLocation)}</li>
+              <li>通報來源：${orBlank(data.reportSource)}</li>
+              <li>其他通報來源：${orBlank(data.otherReportSource)}</li>
+            </ul>
+          </div>
+          <div class="summary-section">
+            <h4>受助者資料與病史</h4>
+            <ul class="summary-list">
+              <li>受助者身分：${orBlank(data.personType)}</li>
+              <li>選手號碼布：${orBlank(data.bibNumber)}</li>
+              <li>號碼布狀態：${orBlank(data.bibStatus)}</li>
+              <li>姓名：${orBlank(data.name)}</li>
+              <li>過去病史：${listOrBlank(data.medicalHistory)}</li>
+              <li>病史補充：${orBlank(data.medicalHistoryNote)}</li>
+              <li>過敏史：${listOrBlank(data.allergies)}</li>
+              <li>過敏補充：${orBlank(data.allergyNote)}</li>
+            </ul>
+          </div>
+          <div class="summary-section">
+            <h4>症狀與事件機轉</h4>
+            <ul class="summary-list">
+              <li>主訴及傷病症狀：${listOrBlank(data.symptoms)}</li>
+              <li>其他症狀說明：${orBlank(data.otherSymptom)}</li>
+              <li>事件機轉及情境：${listOrBlank(data.mechanisms)}</li>
+              <li>其他事件機轉說明：${orBlank(data.otherMechanism)}</li>
+            </ul>
+          </div>
+          <div class="summary-section">
+            <h4>生命徵象與處置</h4>
+            <ul class="summary-list">
+              <li>是否已量測生命徵象：${orBlank(data.vitalsMeasured)}</li>
+              <li>心率：${orBlank(data.heartRate)}</li>
+              <li>收縮壓：${orBlank(data.systolic)}</li>
+              <li>舒張壓：${orBlank(data.diastolic)}</li>
+              <li>SpO2：${orBlank(data.spo2)}</li>
+              <li>體溫：${orBlank(data.temperature)}</li>
+              <li>血糖：${orBlank(data.glucose)}</li>
+              <li>參賽建議：${orBlank(data.participationAdvice)}</li>
+              <li>現場簡易處置：${listOrBlank(data.treatments)}</li>
+              <li>其他處置說明：${orBlank(data.otherTreatment)}</li>
+              <li>是否已通知醫療人員：${orBlank(data.medicalNotified)}</li>
+              <li>通知對象及時間：${orBlank(data.notificationDetail)}</li>
+              <li>後續去向：${orBlank(data.destination)}</li>
+              <li>其他去向說明：${orBlank(data.otherDestination)}</li>
+            </ul>
+          </div>
+          <div class="summary-section">
+            <h4>交班補充與回報</h4>
+            <ul class="summary-list">
+              <li>交班及轉送補充：${orBlank(data.handoverNote)}</li>
+              <li>回報人員：${orBlank(data.reporter)}</li>
+            </ul>
+          </div>
+        `;
+        summaryBlock.innerHTML = html;
       }
 
       function handleSubmit() {
@@ -1388,71 +1480,50 @@
 
         const payload = buildPayload();
 
-        try {
-          payloadField.value = JSON.stringify(payload);
-        } catch (err) {
-          showError('無法整理送出資料，請重新整理頁面後再試。');
+        if (payload.website) {
+          showError('資料驗證失敗。');
           return;
         }
 
         isSubmitting = true;
-        renderStep();
-        clearError();
+        submitButton.disabled = true;
+        nextButton.disabled = true;
+        prevButton.disabled = true;
         statusChip.textContent = '正在送出資料…';
-        statusChip.classList.remove('error');
 
-        try {
-          form.submit();
-        } catch (err) {
-          isSubmitting = false;
-          renderStep();
-          showError('目前無法連線至資料服務，請由正式網址開啟後再送出。');
-        }
+        fetch(BACKEND_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+          .then(response => response.json())
+          .then(result => {
+            isSubmitting = false;
+            submitButton.disabled = false;
+            nextButton.disabled = false;
+            prevButton.disabled = currentStep === 0;
+
+            if (result.ok) {
+              clearError();
+              statusChip.textContent = '回報已完成';
+              formContent.style.display = 'none';
+              successPanel.classList.add('show');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              showError(result.message || '資料送出失敗，請稍後再試。');
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            isSubmitting = false;
+            submitButton.disabled = false;
+            nextButton.disabled = false;
+            prevButton.disabled = currentStep === 0;
+            showError('目前無法連線至資料服務，請由正式網址開啟後再送出。');
+          });
       }
 
       submitButton.addEventListener('click', handleSubmit);
-
-      window.addEventListener('message', function (event) {
-        // 只接受來自 Apps Script 的訊息
-        const allowedOrigins = [
-          'https://script.google.com',
-          'https://script.googleusercontent.com'
-        ];
-        if (!allowedOrigins.some(origin => event.origin.startsWith(origin))) {
-          return;
-        }
-
-        const data = event.data || {};
-        if (data.source !== 'ems-report') {
-          return;
-        }
-
-        isSubmitting = false;
-        renderStep();
-
-        if (data.ok) {
-          clearError();
-          statusChip.textContent = '回報已完成';
-          formContent.style.display = 'none';
-          successPanel.classList.add('show');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          const msg = data.error || '資料送出失敗，請稍後再試。';
-          showError(msg);
-        }
-      });
-
-      newReportButton.addEventListener('click', () => {
-        form.reset();
-        firstContactTime.value = localNow();
-        currentStep = 0;
-        successPanel.classList.remove('show');
-        formContent.style.display = 'block';
-        isSubmitting = false;
-        clearError();
-        renderStep();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
 
       renderStep();
     })();
