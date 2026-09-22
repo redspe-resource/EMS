@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0756a5">
+  <title>初步傷病回報系統</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Art direction: 賽事救護回報 → 專業、迅速、清楚
+       Palette: 白色基底，藍色操作，綠色完成，紅色警示
+       Typography: Noto Sans TC — 跨裝置繁體中文辨識清楚
+       Density: 平衡 */
+    :root,[data-theme="light"]{
+      --bg:#eef4f9;--surface:#fff;--surface-2:#f7fafc;--offset:#e8f0f7;--border:#c8d5e2;
+      --text:#142536;--muted:#52677a;--faint:#73879a;--inverse:#fff;
+      --blue:#0756a5;--blue-hover:#064987;--blue-soft:#e0edf9;
+      --green:#18794e;--green-hover:#11623e;--green-soft:#dff3e8;
+      --red:#b4232f;--red-hover:#921d27;--red-soft:#fae4e7;
+      --shadow:0 12px 36px rgba(22,54,82,.12);--shadow-sm:0 2px 10px rgba(22,54,82,.08);
+    }
+    [data-theme="dark"]{
+      --bg:#0e1822;--surface:#162432;--surface-2:#1b2c3c;--offset:#21384a;--border:#3d566b;
+      --text:#f2f6f9;--muted:#b8c8d5;--faint:#95a9ba;--inverse:#fff;
+      --blue:#4b9be8;--blue-hover:#72b3f1;--blue-soft:#183d61;
+      --green:#4dbb82;--green-hover:#73cca0;--green-soft:#173e2d;
+      --red:#f0717b;--red-hover:#fa929a;--red-soft:#54252b;
+      --shadow:0 14px 40px rgba(0,0,0,.32);--shadow-sm:0 2px 10px rgba(0,0,0,.25);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+    body{min-height:100dvh;background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:16px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom)}
+    button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}a{color:inherit}.skip{position:fixed;left:1rem;top:-5rem;background:var(--surface);padding:.75rem 1rem;z-index:99}.skip:focus{top:1rem}
+    :focus-visible{outline:3px solid var(--blue);outline-offset:2px}.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+    .topbar-inner{max-width:1120px;margin:auto;min-height:72px;padding:12px clamp(16px,4vw,32px);display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}.logo{width:42px;height:42px;flex:0 0 auto}.brand h1{font-size:clamp(19px,3vw,24px);line-height:1.2}.brand p{font-size:12px;color:var(--muted)}
+    .theme-button{width:46px;height:46px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);display:grid;place-items:center;color:var(--blue)}.theme-button:hover{background:var(--blue-soft)}
+    .page{max-width:1120px;margin:auto;padding:clamp(18px,4vw,40px)}.intro{display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;margin-bottom:22px}.intro h2{font-size:clamp(26px,4vw,36px);line-height:1.2;margin-bottom:8px}.intro p{color:var(--muted)}
+    .status-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:var(--green-soft);color:var(--green);border-radius:999px;font-size:14px;font-weight:700;white-space:nowrap}.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .progress-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:20px;box-shadow:var(--shadow-sm)}.progress-head{display:flex;justify-content:space-between;gap:16px;font-size:14px;margin-bottom:10px}.progress-head strong{color:var(--blue)}.progress{height:8px;background:var(--offset);border-radius:999px;overflow:hidden}.progress-bar{height:100%;width:20%;background:var(--blue);border-radius:inherit;transition:width .35s ease}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start}.form-card,.aside-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}.form-card{overflow:hidden}.form-head{padding:24px clamp(18px,4vw,32px);background:var(--surface-2);border-bottom:1px solid var(--border)}.step-kicker{color:var(--blue);font-size:13px;font-weight:800;letter-spacing:.08em;margin-bottom:5px}.form-head h3{font-size:clamp(21px,3vw,26px)}.form-head p{color:var(--muted);font-size:14px;margin-top:5px}
+    .form-body{padding:clamp(20px,4vw,32px)}.step{display:none}.step.active{display:block;animation:enter .24s ease}@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.full{grid-column:1/-1}.field{min-width:0}.field label,.group-label{display:block;font-size:14px;font-weight:700;margin-bottom:8px}.required{color:var(--red);margin-left:3px}.hint{font-size:12px;color:var(--muted);margin-top:6px}
+    input,select,textarea{width:100%;min-height:48px;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:11px 13px}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft);outline:none}textarea{min-height:104px;resize:vertical}input::placeholder,textarea::placeholder{color:var(--faint)}
+    .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.options.three{grid-template-columns:repeat(3,minmax(0,1fr))}.option{position:relative;display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);cursor:pointer;user-select:none}.option:hover{border-color:var(--blue)}.option input{width:19px;height:19px;min-height:auto;accent-color:var(--blue);flex:0 0 auto}.option:has(input:checked){border-color:var(--blue);background:var(--blue-soft);color:var(--blue);font-weight:700}
+    .conditional{display:none}.conditional.show{display:block}.vitals{padding:18px;background:var(--surface-2);border-radius:12px}.error-box{display:none;margin:0 0 18px;padding:12px 14px;border-radius:10px;background:var(--red-soft);color:var(--red);font-weight:700}.error-box.show{display:block}.actions{display:flex;justify-content:space-between;gap:12px;padding:18px clamp(18px,4vw,32px);border-top:1px solid var(--border);background:var(--surface-2)}
+    .button{min-height:48px;border:0;border-radius:10px;padding:11px 20px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px}.button.primary{background:var(--blue);color:var(--inverse)}.button.primary:hover{background:var(--blue-hover)}.button.success{background:var(--green);color:var(--inverse)}.button.success:hover{background:var(--green-hover)}.button.secondary{background:var(--surface);border:1px solid var(--border)}.button.secondary:hover{background:var(--offset)}.button[disabled]{opacity:.58;cursor:not-allowed}
+    aside{display:grid;gap:14px;position:sticky;top:94px}.aside-card{padding:20px;box-shadow:var(--shadow-sm)}.aside-card h3{font-size:16px;margin-bottom:10px}.aside-card p,.aside-card li{font-size:14px;color:var(--muted)}.aside-card ul{padding-left:20px;display:grid;gap:8px}.privacy{background:var(--blue-soft);border-color:color-mix(in srgb,var(--blue) 30%,var(--border))}.privacy h3{color:var(--blue)}
+    .review{display:grid;gap:14px}.review-section{border-bottom:1px solid var(--border);padding-bottom:14px}.review-section:last-child{border:0}.review-section h4{color:var(--blue);font-size:14px;margin-bottom:8px}.review-list{display:grid;grid-template-columns:150px 1fr;gap:7px 12px;font-size:14px}.review-list dt{color:var(--muted)}.review-list dd{font-weight:600;overflow-wrap:anywhere}
+    .success-panel{display:none;text-align:center;padding:clamp(40px,8vw,76px) 20px}.success-panel.show{display:block}.success-mark{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;background:var(--green-soft);color:var(--green)}.success-panel h3{font-size:28px;margin-bottom:8px}.success-panel p{color:var(--muted)}.case-id{display:inline-block;margin:22px 0;padding:12px 18px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);font-size:20px;font-weight:800;color:var(--blue);font-variant-numeric:tabular-nums}.loading{display:none;align-items:center;gap:9px}.loading.show{display:inline-flex}.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}.footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 16px}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}aside{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.topbar-inner{min-height:64px}.brand p{display:none}.page{padding:16px 12px 28px}.intro{grid-template-columns:1fr;gap:12px;align-items:start}.status-chip{justify-self:start}.grid,.grid.three{grid-template-columns:1fr}.options,.options.three{grid-template-columns:1fr}.form-head,.form-body{padding:20px 16px}.actions{position:sticky;bottom:0;z-index:10;padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -8px 22px rgba(22,54,82,.08)}.button{flex:1;padding-inline:12px}.review-list{grid-template-columns:1fr;gap:2px}.review-list dd{margin-bottom:7px}aside{grid-template-columns:1fr}.progress-wrap{padding:15px}.progress-head span:last-child{display:none}}
+    @media(max-width:380px){.brand h1{font-size:17px}.logo{width:38px;height:38px}.actions{gap:8px}.button{font-size:14px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#reportForm">跳至回報表單</a>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 48 48" role="img" aria-label="零捌玖救護協會標誌">
+        <rect x="3" y="3" width="42" height="42" rx="11" fill="var(--blue)"/>
+        <path d="M21 10h6v11h11v6H27v11h-6V27H10v-6h11z" fill="white"/>
+        <path d="M35 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z" fill="var(--red)" stroke="white" stroke-width="2"/>
+      </svg>
+      <div><h1>初步傷病回報系統</h1><p>零捌玖救護協會</p></div>
+    </div>
+    <button class="theme-button" type="button" id="themeToggle" aria-label="切換深色模式" title="切換顯示模式">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+    </button>
+  </div>
+</header>
+<main class="page">
+  <section class="intro" aria-labelledby="pageTitle">
+    <div><h2 id="pageTitle">現場傷病紀錄</h2><p>請依現場狀況逐步填寫，送出前可再次確認內容。</p></div>
+    <div class="status-chip"><span class="status-dot"></span>系統可正常登錄</div>
+  </section>
+  <section class="progress-wrap" aria-label="填寫進度">
+    <div class="progress-head"><strong id="progressLabel">步驟 1，共 5 步</strong><span id="progressName">事件資訊</span></div>
+    <div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1"><div class="progress-bar" id="progressBar"></div></div>
+  </section>
+  <div class="layout">
+    <form class="form-card" id="reportForm" novalidate>
+      <div id="formContent">
+        <header class="form-head"><div class="step-kicker" id="stepKicker">步驟 01</div><h3 id="stepTitle">事件資訊</h3><p id="stepDescription">記錄接觸時間、位置與通報來源。</p></header>
+        <div class="form-body">
+          <div class="error-box" id="errorBox" role="alert" tabindex="-1"></div>
+          <input class="honeypot" type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <section class="step active" data-step="0">
+            <div class="grid">
+              <div class="field"><label for="firstContactTime">首次接觸時間<span class="required">*</span></label><input type="datetime-local" id="firstContactTime" required></div>
+              <div class="field"><label for="location">地點（醫療位置）<span class="required">*</span></label><select id="location" required><option value="">請選擇</option><option>起點醫療站</option><option>終點醫療站</option><option>賽道救護點</option><option>救護車</option><option>其他</option></select></div>
+              <div class="field conditional" id="otherLocationWrap"><label for="otherLocation">其他地點說明<span class="required">*</span></label><input id="otherLocation" placeholder="請輸入地點"></div>
+              <div class="field"><label for="trackLocation">賽道位置（定位說明）</label><input id="trackLocation" placeholder="例如 5K 處或補給站前方"></div>
+              <div class="field"><label for="reportSource">通報來源<span class="required">*</span></label><select id="reportSource" required><option value="">請選擇</option><option>受助者自行求助</option><option>工作人員</option><option>醫療人員</option><option>參賽者</option><option>民眾</option><option>其他</option></select></div>
+              <div class="field conditional" id="otherReportSourceWrap"><label for="otherReportSource">其他通報來源<span class="required">*</span></label><input id="otherReportSource" placeholder="請輸入通報來源"></div>
+            </div>
+          </section>
+
+          <section class="step" data-step="1">
+            <div class="grid">
+              <div class="field"><label for="personType">受助者身分<span class="required">*</span></label><select id="personType" required><option value="">請選擇</option><option>參賽選手</option><option>工作人員</option><option>民眾</option><option>志工</option><option>其他</option></select></div>
+              <div class="field"><label for="bibNumber">選手號碼布</label><input id="bibNumber" inputmode="numeric" placeholder="非選手可留白"></div>
+              <div class="field"><label for="bibStatus">號碼布狀態</label><select id="bibStatus"><option value="">請選擇</option><option>可辨識</option><option>破損</option><option>未攜帶</option><option>不明或無法辨識</option><option>不適用</option></select></div>
+              <div class="field"><label for="name">姓名</label><input id="name" autocomplete="name" placeholder="可依現場需求填寫"></div>
+              <fieldset class="field full"><legend class="group-label">過去病史</legend><div class="options three" data-group="medicalHistory"><label class="option"><input type="checkbox" value="無已知病史">無已知病史</label><label class="option"><input type="checkbox" value="心血管疾病">心血管疾病</label><label class="option"><input type="checkbox" value="糖尿病">糖尿病</label><label class="option"><input type="checkbox" value="氣喘">氣喘</label><label class="option"><input type="checkbox" value="癲癇">癲癇</label><label class="option"><input type="checkbox" value="其他">其他</label></div></fieldset>
+              <div class="field full"><label for="medicalHistoryNote">病史補充</label><textarea id="medicalHistoryNote" placeholder="如有需要請補充"></textarea></div>
+              <fieldset class="field full"><legend class="group-label">過敏史</legend><div class="options" data-group="allergies"><label class="option"><input type="checkbox" value="無已知過敏">無已知過敏</label><label class="option"><input type="checkbox" value="藥物過敏">藥物過敏</label><label class="option"><input type="checkbox" value="食物過敏">食物過敏</label><label class="option"><input type="checkbox" value="其他">其他</label></div></fieldset>
+              <div class="field full"><label for="allergyNote">過敏補充</label><textarea id="allergyNote" placeholder="請補充過敏原或反應"></textarea></div>
+            </div>
+          </section>
+
+          <section class="step" data-step="2">
+            <div class="grid">
+              <fieldset class="field full"><legend class="group-label">主訴及傷病症狀<span class="required">*</span></legend><div class="options three" data-group="symptoms"><label class="option"><input type="checkbox" value="擦傷或撕裂傷">擦傷或撕裂傷</label><label class="option"><input type="checkbox" value="扭傷或拉傷">扭傷或拉傷</label><label class="option"><input type="checkbox" value="抽筋">抽筋</label><label class="option"><input type="checkbox" value="脫水或口渴">脫水或口渴</label><label class="option"><input type="checkbox" value="頭暈或暈厥">頭暈或暈厥</label><label class="option"><input type="checkbox" value="胸悶或胸痛">胸悶或胸痛</label><label class="option"><input type="checkbox" value="呼吸困難">呼吸困難</label><label class="option"><input type="checkbox" value="噁心或嘔吐">噁心或嘔吐</label><label class="option"><input type="checkbox" value="其他">其他</label></div></fieldset>
+              <div class="field full"><label for="otherSymptom">其他症狀說明</label><textarea id="otherSymptom" placeholder="補充症狀、部位及嚴重程度"></textarea></div>
+              <fieldset class="field full"><legend class="group-label">事件機轉及情境<span class="required">*</span></legend><div class="options three" data-group="mechanisms"><label class="option"><input type="checkbox" value="跑步中自行不適">跑步中自行不適</label><label class="option"><input type="checkbox" value="跌倒">跌倒</label><label class="option"><input type="checkbox" value="碰撞">碰撞</label><label class="option"><input type="checkbox" value="環境高溫">環境高溫</label><label class="option"><input type="checkbox" value="既有疾病發作">既有疾病發作</label><label class="option"><input type="checkbox" value="其他">其他</label></div></fieldset>
+              <div class="field full"><label for="otherMechanism">其他事件機轉說明</label><textarea id="otherMechanism" placeholder="請補充事件經過"></textarea></div>
+            </div>
+          </section>
+
+          <section class="step" data-step="3">
+            <div class="grid">
+              <fieldset class="field full"><legend class="group-label">是否已量測生命徵象<span class="required">*</span></legend><div class="options" data-radio="vitalsMeasured"><label class="option"><input type="radio" name="vitalsMeasured" value="是">是</label><label class="option"><input type="radio" name="vitalsMeasured" value="否">否</label></div></fieldset>
+              <div class="field full conditional vitals" id="vitalsWrap"><div class="grid three">
+                <div class="field"><label for="heartRate">心率（下每分鐘）</label><input type="number" id="heartRate" inputmode="numeric" min="20" max="300" placeholder="例如 88"></div>
+                <div class="field"><label for="systolic">收縮壓（mmHg）</label><input type="number" id="systolic" inputmode="numeric" min="40" max="300" placeholder="例如 120"></div>
+                <div class="field"><label for="diastolic">舒張壓（mmHg）</label><input type="number" id="diastolic" inputmode="numeric" min="20" max="200" placeholder="例如 80"></div>
+                <div class="field"><label for="spo2">SpO2（%）</label><input type="number" id="spo2" inputmode="numeric" min="50" max="100" placeholder="例如 98"></div>
+                <div class="field"><label for="temperature">體溫（°C）</label><input type="number" id="temperature" inputmode="decimal" min="30" max="45" step="0.1" placeholder="例如 36.8"></div>
+                <div class="field"><label for="glucose">血糖（mg/dL）</label><input type="number" id="glucose" inputmode="numeric" min="20" max="800" placeholder="例如 105"></div>
+              </div></div>
+              <div class="field"><label for="participationAdvice">參賽建議<span class="required">*</span></label><select id="participationAdvice" required><option value="">請選擇</option><option>可繼續參賽</option><option>休息後再評估</option><option>建議退賽</option><option>立即停止參賽</option><option>不適用</option></select></div>
+              <fieldset class="field full"><legend class="group-label">現場簡易處置<span class="required">*</span></legend><div class="options three" data-group="treatments"><label class="option"><input type="checkbox" value="休息觀察">休息觀察</label><label class="option"><input type="checkbox" value="傷口清潔及包紮">傷口清潔及包紮</label><label class="option"><input type="checkbox" value="冰敷">冰敷</label><label class="option"><input type="checkbox" value="補水或補充電解質">補水或補充電解質</label><label class="option"><input type="checkbox" value="固定">固定</label><label class="option"><input type="checkbox" value="其他">其他</label></div></fieldset>
+              <div class="field full"><label for="otherTreatment">其他處置說明</label><textarea id="otherTreatment" placeholder="請補充處置內容"></textarea></div>
+              <fieldset class="field full"><legend class="group-label">是否已通知醫療人員<span class="required">*</span></legend><div class="options" data-radio="medicalNotified"><label class="option"><input type="radio" name="medicalNotified" value="是">是</label><label class="option"><input type="radio" name="medicalNotified" value="否">否</label></div></fieldset>
+              <div class="field full conditional" id="notificationDetailWrap"><label for="notificationDetail">通知對象及時間<span class="required">*</span></label><input id="notificationDetail" placeholder="例如 10:35 通知醫療站醫師"></div>
+              <div class="field"><label for="destination">後續去向<span class="required">*</span></label><select id="destination" required><option value="">請選擇</option><option>原地離開</option><option>返回賽道</option><option>醫療站觀察</option><option>救護車或醫療單位</option><option>由親友陪同離開</option><option>其他</option></select></div>
+              <div class="field conditional" id="otherDestinationWrap"><label for="otherDestination">其他去向說明<span class="required">*</span></label><input id="otherDestination" placeholder="請輸入後續去向"></div>
+              <div class="field full"><label for="handoverNote">交班及轉送補充</label><textarea id="handoverNote" maxlength="1000" placeholder="記錄交班對象、轉送資訊或需持續注意事項"></textarea></div>
+              <div class="field full"><label for="reporter">回報人員<span class="required">*</span></label><input id="reporter" required autocomplete="name" placeholder="請輸入姓名或人員代號"></div>
+            </div>
+          </section>
+
+          <section class="step" data-step="4"><div class="review" id="reviewContent"></div></section>
+        </div>
+        <div class="actions"><button class="button secondary" type="button" id="prevButton" hidden>上一步</button><button class="button primary" type="button" id="nextButton">下一步</button><button class="button success" type="submit" id="submitButton" hidden><span class="submit-label">確認送出</span><span class="loading"><span class="spinner"></span>正在送出</span></button></div>
+      </div>
+      <section class="success-panel" id="successPanel" aria-live="polite"><div class="success-mark"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 4 4L19 6"/></svg></div><h3>回報已完成</h3><p>資料已寫入初步傷病回報工作表。</p><div class="case-id" id="caseId"></div><p id="submittedAt"></p><button class="button primary" type="button" id="newReportButton" style="margin-top:24px">新增下一筆回報</button></section>
+    </form>
+    <aside aria-label="填寫提醒"><section class="aside-card privacy"><h3>個資與醫療資訊</h3><p>僅填寫執勤所需內容。請勿將姓名、病史或詳細傷情轉貼至公開群組。</p></section><section class="aside-card"><h3>現場填寫原則</h3><ul><li>先完成必要資訊，再補充細節。</li><li>數值不確定時請留白，不要推測。</li><li>緊急狀況應先處置及通報，再完成紀錄。</li></ul></section></aside>
+  </div>
+</main>
+<footer class="footer">零捌玖救護協會　初步傷病回報系統</footer>
+<script>
+(function(){
+  'use strict';
+  const stepMeta=[
+    ['事件資訊','記錄接觸時間、位置與通報來源。'],
+    ['受助者資料','記錄身分、識別資料、病史及過敏史。'],
+    ['傷病評估','記錄主訴、症狀及事件經過。'],
+    ['處置與去向','記錄生命徵象、現場處置及後續安排。'],
+    ['確認送出','確認內容無誤後送出回報。']
+  ];
+  let currentStep=0;
+  let theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  const $=id=>document.getElementById(id);
+  const steps=[...document.querySelectorAll('.step')];
+  const form=$('reportForm');
+
+  document.documentElement.dataset.theme=theme;
+  $('themeToggle').addEventListener('click',()=>{
+    theme=theme==='dark'?'light':'dark';
+    document.documentElement.dataset.theme=theme;
+    $('themeToggle').setAttribute('aria-label',theme==='dark'?'切換淺色模式':'切換深色模式');
+  });
+
+  function localNow(){
+    const date=new Date(Date.now()-new Date().getTimezoneOffset()*60000);
+    return date.toISOString().slice(0,16);
+  }
+  $('firstContactTime').value=localNow();
+
+  function toggle(selectId,wrapId,expected){
+    const control=$(selectId),wrap=$(wrapId);
+    const update=()=>wrap.classList.toggle('show',control.value===expected);
+    control.addEventListener('change',update);update();
+  }
+  toggle('location','otherLocationWrap','其他');
+  toggle('reportSource','otherReportSourceWrap','其他');
+  toggle('destination','otherDestinationWrap','其他');
+  document.querySelectorAll('input[name="vitalsMeasured"]').forEach(input=>input.addEventListener('change',()=>$('vitalsWrap').classList.toggle('show',input.value==='是'&&input.checked)));
+  document.querySelectorAll('input[name="medicalNotified"]').forEach(input=>input.addEventListener('change',()=>$('notificationDetailWrap').classList.toggle('show',input.value==='是'&&input.checked)));
+
+  function checkedValues(group){return [...document.querySelectorAll('[data-group="'+group+'"] input:checked')].map(input=>input.value)}
+  function radioValue(name){return document.querySelector('input[name="'+name+'"]:checked')?.value||''}
+  function value(id){return $(id)?.value.trim()||''}
+  function payload(){return{
+    requestId:(crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2)),
+    website:value('website'),firstContactTime:value('firstContactTime'),location:value('location'),otherLocation:value('otherLocation'),trackLocation:value('trackLocation'),
+    reportSource:value('reportSource'),otherReportSource:value('otherReportSource'),personType:value('personType'),bibNumber:value('bibNumber'),bibStatus:value('bibStatus'),name:value('name'),
+    medicalHistory:checkedValues('medicalHistory'),medicalHistoryNote:value('medicalHistoryNote'),allergies:checkedValues('allergies'),allergyNote:value('allergyNote'),
+    symptoms:checkedValues('symptoms'),otherSymptom:value('otherSymptom'),mechanisms:checkedValues('mechanisms'),otherMechanism:value('otherMechanism'),
+    vitalsMeasured:radioValue('vitalsMeasured'),heartRate:value('heartRate'),systolic:value('systolic'),diastolic:value('diastolic'),spo2:value('spo2'),temperature:value('temperature'),glucose:value('glucose'),
+    participationAdvice:value('participationAdvice'),treatments:checkedValues('treatments'),otherTreatment:value('otherTreatment'),medicalNotified:radioValue('medicalNotified'),notificationDetail:value('notificationDetail'),
+    destination:value('destination'),otherDestination:value('otherDestination'),handoverNote:value('handoverNote'),reporter:value('reporter')
+  }}
+
+  function showError(message,element){
+    const box=$('errorBox');box.textContent=message;box.classList.add('show');box.focus();
+    if(element){element.focus();element.scrollIntoView({behavior:'smooth',block:'center'})}
+    return false;
+  }
+  function clearError(){$('errorBox').classList.remove('show');$('errorBox').textContent=''}
+  function checkStep(index){
+    clearError();const data=payload();
+    if(index===0){if(!data.firstContactTime)return showError('請填寫首次接觸時間。',$('firstContactTime'));if(!data.location)return showError('請選擇地點。',$('location'));if(data.location==='其他'&&!data.otherLocation)return showError('請填寫其他地點說明。',$('otherLocation'));if(!data.reportSource)return showError('請選擇通報來源。',$('reportSource'));if(data.reportSource==='其他'&&!data.otherReportSource)return showError('請填寫其他通報來源。',$('otherReportSource'))}
+    if(index===1){if(!data.personType)return showError('請選擇受助者身分。',$('personType'))}
+    if(index===2){if(!data.symptoms.length)return showError('請至少選擇一項主訴及傷病症狀。',document.querySelector('[data-group="symptoms"] input'));if(!data.mechanisms.length)return showError('請至少選擇一項事件機轉及情境。',document.querySelector('[data-group="mechanisms"] input'))}
+    if(index===3){if(!data.vitalsMeasured)return showError('請選擇是否已量測生命徵象。',document.querySelector('input[name="vitalsMeasured"]'));if(!data.participationAdvice)return showError('請選擇參賽建議。',$('participationAdvice'));if(!data.treatments.length)return showError('請至少選擇一項現場簡易處置。',document.querySelector('[data-group="treatments"] input'));if(!data.medicalNotified)return showError('請選擇是否已通知醫療人員。',document.querySelector('input[name="medicalNotified"]'));if(data.medicalNotified==='是'&&!data.notificationDetail)return showError('請填寫通知對象及時間。',$('notificationDetail'));if(!data.destination)return showError('請選擇後續去向。',$('destination'));if(data.destination==='其他'&&!data.otherDestination)return showError('請填寫其他去向說明。',$('otherDestination'));if(!data.reporter)return showError('請填寫回報人員。',$('reporter'))}
+    return true;
+  }
+
+  function renderStep(){
+    steps.forEach((step,index)=>step.classList.toggle('active',index===currentStep));
+    $('stepKicker').textContent='步驟 '+String(currentStep+1).padStart(2,'0');$('stepTitle').textContent=stepMeta[currentStep][0];$('stepDescription').textContent=stepMeta[currentStep][1];
+    $('progressLabel').textContent='步驟 '+(currentStep+1)+'，共 5 步';$('progressName').textContent=stepMeta[currentStep][0];$('progressBar').style.width=((currentStep+1)*20)+'%';document.querySelector('.progress').setAttribute('aria-valuenow',currentStep+1);
+    $('prevButton').hidden=currentStep===0;$('nextButton').hidden=currentStep===4;$('submitButton').hidden=currentStep!==4;
+    if(currentStep===4)renderReview();clearError();window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function display(value){return Array.isArray(value)?(value.join('、')||'未填寫'):(value||'未填寫')}
+  function renderReview(){
+    const d=payload();
+    const sections=[
+      ['事件資訊',[['首次接觸時間',d.firstContactTime.replace('T',' ')],['地點',d.location+(d.otherLocation?'：'+d.otherLocation:'')],['賽道位置',d.trackLocation],['通報來源',d.reportSource+(d.otherReportSource?'：'+d.otherReportSource:'')]]],
+      ['受助者資料',[['身分',d.personType],['號碼布',d.bibNumber],['號碼布狀態',d.bibStatus],['姓名',d.name],['過去病史',d.medicalHistory],['過敏史',d.allergies]]],
+      ['傷病評估',[['主訴及症狀',d.symptoms],['症狀補充',d.otherSymptom],['事件機轉',d.mechanisms],['機轉補充',d.otherMechanism]]],
+      ['處置與去向',[['生命徵象',d.vitalsMeasured==='是'?'心率 '+(d.heartRate||'未填寫')+'，血壓 '+(d.systolic||'未填寫')+' 比 '+(d.diastolic||'未填寫')+'，SpO2 '+(d.spo2||'未填寫')+'%，體溫 '+(d.temperature||'未填寫')+'°C，血糖 '+(d.glucose||'未填寫'):d.vitalsMeasured],['參賽建議',d.participationAdvice],['現場處置',d.treatments],['通知醫療人員',d.medicalNotified+(d.notificationDetail?'：'+d.notificationDetail:'')],['後續去向',d.destination+(d.otherDestination?'：'+d.otherDestination:'')],['交班補充',d.handoverNote],['回報人員',d.reporter]]]
+    ];
+    $('reviewContent').innerHTML=sections.map(section=>'<section class="review-section"><h4>'+escapeHtml(section[0])+'</h4><dl class="review-list">'+section[1].map(item=>'<dt>'+escapeHtml(item[0])+'</dt><dd>'+escapeHtml(display(item[1]))+'</dd>').join('')+'</dl></section>').join('');
+  }
+  function escapeHtml(text){const div=document.createElement('div');div.textContent=String(text);return div.innerHTML}
+
+  $('nextButton').addEventListener('click',()=>{if(checkStep(currentStep)){currentStep++;renderStep()}});
+  $('prevButton').addEventListener('click',()=>{if(currentStep>0){currentStep--;renderStep()}});
+  form.addEventListener('submit',event=>{
+    event.preventDefault();if(!checkStep(3))return;
+    const button=$('submitButton');button.disabled=true;button.querySelector('.submit-label').hidden=true;button.querySelector('.loading').classList.add('show');
+    if(!(window.google&&google.script&&google.script.run)){showError('目前無法連線至資料服務，請由正式網址開啟後再送出。');resetButton();return}
+    google.script.run.withSuccessHandler(result=>{
+      $('formContent').style.display='none';$('successPanel').classList.add('show');$('caseId').textContent='案號 '+result.caseId;$('submittedAt').textContent='登錄時間 '+result.submittedAt;window.scrollTo({top:0,behavior:'smooth'});
+    }).withFailureHandler(error=>{showError(error&&error.message?error.message:'送出失敗，請確認網路連線後再試一次。');resetButton()}).submitReport(payload());
+  });
+  function resetButton(){const button=$('submitButton');button.disabled=false;button.querySelector('.submit-label').hidden=false;button.querySelector('.loading').classList.remove('show')}
+  $('newReportButton').addEventListener('click',()=>{form.reset();$('firstContactTime').value=localNow();document.querySelectorAll('.conditional').forEach(el=>el.classList.remove('show'));currentStep=0;$('successPanel').classList.remove('show');$('formContent').style.display='block';resetButton();renderStep()});
+  renderStep();
+})();
+</script>
+</body>
+</html>
