@@ -1,120 +1,503 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <title>零捌玖救護協會現場任務回報模組</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>零捌玖救護協會｜EMS 初步傷病回報</title>
   <style>
-    :root { --bg:#eef4f9; --surface:#ffffff; --surface-2:#f7fafc; --offset:#e8f0f7; --border:#c8d5e2; --text:#142536; --muted:#52677a; --blue:#0756a5; --blue-hover:#064987; --blue-soft:#e0edf9; --green:#18794e; --green-hover:#11623e; --green-soft:#dff3e8; --red:#b4232f; --red-soft:#fae4e7; --shadow:0 12px 36px rgba(22,54,82,.12); --shadow-sm:0 2px 10px rgba(22,54,82,.08);} 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
-    body{min-height:100vh;background:var(--bg);color:var(--text);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:clamp(15px,1.2vw,16px);line-height:1.6;padding-bottom:env(safe-area-inset-bottom);word-break:break-word;overflow-wrap:anywhere}
-    img,svg{max-width:100%;height:auto}
-    .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-    .topbar-inner{max-width:1120px;margin:0 auto;min-height:72px;padding:10px clamp(12px,4vw,24px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 520px}
-    .brand-logo{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
-    .brand-logo img{width:100%;height:100%;object-fit:cover}
-    .brand h1{font-size:clamp(16px,2.8vw,22px);line-height:1.25;word-break:break-word}
-    .brand p{font-size:clamp(11px,1.5vw,12px);color:var(--muted)}
-    .status-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:var(--green-soft);color:var(--green);border-radius:999px;font-size:13px;font-weight:700;white-space:normal;max-width:100%}
-    .status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex:0 0 auto}
-    main.page{max-width:1120px;margin:0 auto;padding:clamp(14px,3vw,24px)}
-    .intro{display:grid;gap:10px;margin-bottom:14px}
-    .intro h2{font-size:clamp(20px,4vw,30px);line-height:1.22;word-break:break-word}
-    .intro p{color:var(--muted);font-size:clamp(13px,1.8vw,14px)}
-    .progress-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
-    .progress-head{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:8px;flex-wrap:wrap}.progress-head strong{color:var(--blue)}
-    .progress{height:6px;background:var(--offset);border-radius:999px;overflow:hidden}.progress-bar{height:100%;width:16.666%;background:var(--blue);border-radius:inherit;transition:width .25s ease}
-    .layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:16px;align-items:flex-start}
-    .form-card,.aside-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
-    .form-card{overflow:hidden;min-width:0}.form-head{padding:16px clamp(14px,3vw,24px);background:var(--surface-2);border-bottom:1px solid var(--border)}
-    .step-kicker{color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
-    .form-head h3{font-size:clamp(17px,2.5vw,18px)}.form-head p{color:var(--muted);font-size:13px;margin-top:4px}
-    .form-body{padding:clamp(14px,3vw,24px);min-width:0}.step{display:none}.step.active{display:block;animation:enter .18s ease}
-    @keyframes enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:10px;align-items:flex-start}
-    .grid.full{grid-column:1 / -1}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr));align-items:flex-start}
-    .field{min-width:0;display:flex;flex-direction:column;overflow:hidden}
-    .field label,.group-label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.required{color:var(--red);margin-left:3px}.hint{font-size:12px;color:var(--muted);margin-top:4px}
-    input,select,textarea{width:100%;max-width:100%;min-height:40px;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:9px 11px;font-size:clamp(13px,1.8vw,14px)}
-    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft);outline:none} textarea{min-height:80px;resize:vertical}
-    .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px}.options.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .option{position:relative;display:flex;align-items:flex-start;gap:10px;min-height:40px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);cursor:pointer;user-select:none;font-size:clamp(12px,1.7vw,13px);overflow-wrap:anywhere}
-    .option:hover{border-color:var(--blue)}.option input{width:18px;height:18px;min-height:auto;flex:0 0 18px;accent-color:var(--blue);margin-top:1px;margin-right:0}.option span{display:block;flex:1 1 auto;line-height:1.45;padding-top:1px}
-    .option.has-input:has(input:checked){border-color:var(--blue);background:var(--blue-soft);color:var(--blue);font-weight:700}
-    .conditional{display:none}.conditional.show{display:block}.vitals{padding:12px;background:var(--surface-2);border-radius:12px}.upload-box{padding:14px;border:1px dashed var(--border);border-radius:12px;background:var(--surface-2)}
-    .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}.photo-card{border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden}
-    .photo-card img{width:100%;aspect-ratio:1/1;object-fit:cover;background:#edf3f8}.photo-meta{padding:8px;font-size:11px;color:var(--muted)}
-    .error-box{display:none;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:var(--red-soft);color:var(--red);font-weight:700;font-size:13px}.error-box.show{display:block}
-    .actions{display:flex;justify-content:space-between;gap:10px;padding:12px clamp(14px,3vw,24px);border-top:1px solid var(--border);background:var(--surface-2);flex-wrap:wrap}
-    .button{min-height:40px;border:0;border-radius:10px;padding:9px 16px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;cursor:pointer;max-width:100%}
-    .button.primary{background:var(--blue);color:#fff}.button.primary:hover{background:var(--blue-hover)}.button.secondary{background:var(--surface);border:1px solid var(--border);color:var(--text)}.button.secondary:hover{background:var(--offset)}.button.success{background:var(--green);color:#fff}.button.success:hover{background:var(--green-hover)}.button:disabled{opacity:.58;cursor:not-allowed}
-    .success-panel{display:none;text-align:center;padding:30px 16px}.success-panel.show{display:block}.success-mark{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:var(--green-soft);color:var(--green)}
-    .summary{text-align:left;font-size:clamp(12px,1.7vw,13px);color:var(--muted);overflow-wrap:anywhere}.summary-section{margin-bottom:10px}.summary-section h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}.summary-list{list-style:none;padding-left:0}.summary-list li{margin-bottom:2px}
-    .aside{display:grid;gap:10px;position:sticky;top:80px}.aside-card{padding:14px;box-shadow:var(--shadow-sm);min-width:0}.aside-card h3{font-size:15px;margin-bottom:6px}.aside-card p,.aside-card li{font-size:13px;color:var(--muted)}
-    .footer{text-align:center;color:var(--muted);font-size:clamp(11px,1.5vw,12px);padding:18px 12px 24px;margin-top:18px}.honeypot{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-    @media (max-width:900px){.layout{grid-template-columns:1fr}.aside{position:static}.grid,.grid.three,.options,.options.three{grid-template-columns:1fr}}
-    @media (max-width:640px){.topbar-inner{min-height:64px}.brand{flex-basis:100%}.brand p{display:none}main.page{padding:10px 10px 20px}.intro{gap:8px}.progress-wrap{margin-bottom:10px}.form-head{padding:12px 14px}.form-body{padding:12px 14px}.actions{position:sticky;bottom:0;z-index:10;padding:10px 12px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 22px rgba(22,54,82,.08)}.button{flex:1 1 100%;padding-inline:10px}}
+    :root{--bg:#f4f7fb;--card:#fff;--line:#d8e0ea;--text:#17324d;--muted:#61748a;--brand:#0f766e;--brand2:#0b5d57;--danger:#b42318;--ok:#027a48;--shadow:0 10px 24px rgba(15,23,42,.08)}
+    *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:20px 14px 120px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}.hero{margin-bottom:16px}.hero h1{margin:0 0 8px;font-size:1.55rem}.hero p{margin:0;color:var(--muted)}
+    .progress{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0 18px}.step-pill{padding:10px 8px;border-radius:999px;border:1px solid var(--line);text-align:center;font-size:.86rem;background:#fff;color:var(--muted)}.step-pill.active{background:var(--brand);color:#fff;border-color:var(--brand)}.step-pill.done{background:#e7f6f4;color:var(--brand2);border-color:#b8e3dd}
+    .step{display:none}.step.active{display:block}.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    label{display:block;font-weight:700;margin:0 0 6px}.hint{font-size:.85rem;color:var(--muted);margin-top:4px}.field{margin-bottom:14px} input[type="text"],input[type="number"],input[type="datetime-local"],textarea,select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;color:inherit} textarea{min-height:96px;resize:vertical}
+    .checks,.radios{display:grid;gap:8px}.checks.inline,.radios.inline{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}.check,.radio{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .bar{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(244,247,251,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line)}.bar-inner{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;gap:10px}
+    button{appearance:none;border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:700;cursor:pointer}.btn{background:#fff;border:1px solid var(--line);color:var(--text)}.btn-primary{background:var(--brand);color:#fff}.btn-primary:disabled{opacity:.55;cursor:not-allowed}.btn-danger{background:var(--danger);color:#fff}
+    .status{margin:12px 0 0;padding:12px 14px;border-radius:12px;display:none}.status.show{display:block}.status.error{background:#fef3f2;color:#b42318;border:1px solid #fecdca}.status.ok{background:#ecfdf3;color:#027a48;border:1px solid #abefc6}
+    .muted{color:var(--muted)} .hide{display:none!important} .photo-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.thumb{border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff}.thumb img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px}.thumb small{display:block;color:var(--muted);margin-top:6px;word-break:break-all}
+    .review{display:grid;gap:10px}.review-item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}.review-item b{display:block;margin-bottom:6px}
+    @media (max-width:720px){.g2,.g3{grid-template-columns:1fr}.progress{grid-template-columns:1fr 1fr}.hero h1{font-size:1.3rem}}
   </style>
 </head>
 <body>
-  <header class="topbar"><div class="topbar-inner"><div class="brand"><div class="brand-logo"><img src="https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Star%20of%20life2.svg&width=240" alt="零捌玖救護協會圖示" width="40" height="40" loading="eager" /></div><div><h1>零捌玖救護協會現場任務回報模組</h1><p>請依現場狀況逐步填寫，送出前可再次確認內容。</p></div></div><div class="status-chip" id="statusChip"><span class="status-dot"></span>系統可正常登錄</div></div></header>
-  <main class="page">
-    <section class="intro" aria-labelledby="pageTitle"><div><h2 id="pageTitle">現場勤務與救護案件回報</h2><p>此模組用於紀錄零捌玖救護協會於活動與勤務現場之救護案件與相關作業流程，內容涵蓋事件情境、任務狀況、現場處置、照片紀錄及交班補充。送出後，資料將統一彙整至後台資料庫，以供統計分析之用。</p></div></section>
-    <section class="progress-wrap" aria-label="表單進度"><div class="progress-head"><strong id="progressLabel">步驟 1 / 6</strong><span id="progressName">事件資訊</span></div><div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1"><div class="progress-bar" id="progressBar"></div></div></section>
-    <section class="layout"><section class="form-card" id="formRoot"><div id="formContent"><header class="form-head"><div class="step-kicker" id="stepKicker">01</div><h3 id="stepTitle">事件資訊</h3><p id="stepDescription">記錄首次接觸時間、地點與通報來源，作為後續統計與追蹤的基礎。</p></header><div class="form-body"><div class="error-box" id="errorBox" role="alert"></div><input type="text" id="website" class="honeypot" autocomplete="off" aria-hidden="true" />
-      <section class="step active" data-step="0"><div class="grid"><div class="field"><label for="firstContactTime">首次接觸時間<span class="required">*</span></label><input type="datetime-local" id="firstContactTime" /></div><div class="field"><label for="location">地點（醫療位置）<span class="required">*</span></label><select id="location"><option value="">請選擇</option><option value="起點醫療站">起點醫療站</option><option value="終點醫療站">終點醫療站</option><option value="賽道救護點">賽道救護點</option><option value="救護車">救護車</option><option value="其他">其他</option></select></div><div class="field conditional" id="otherLocationWrap"><label for="otherLocation">其他地點說明<span class="required">*</span></label><input type="text" id="otherLocation" /></div><div class="field"><label for="trackLocation">賽道位置（定位說明）</label><input type="text" id="trackLocation" /></div><div class="field"><label for="reportSource">通報來源<span class="required">*</span></label><select id="reportSource"><option value="">請選擇</option><option value="受助者自行求助">受助者自行求助</option><option value="工作人員">工作人員</option><option value="醫療人員">醫療人員</option><option value="參賽者">參賽者</option><option value="民眾">民眾</option><option value="其他">其他</option></select></div><div class="field conditional" id="otherReportSourceWrap"><label for="otherReportSource">其他通報來源<span class="required">*</span></label><input type="text" id="otherReportSource" /></div></div></section>
-      <section class="step" data-step="1"><div class="grid"><div class="field"><label for="personType">受助者身分<span class="required">*</span></label><select id="personType"><option value="">請選擇</option><option value="參賽選手">參賽選手</option><option value="工作人員">工作人員</option><option value="民眾">民眾</option><option value="志工">志工</option><option value="其他">其他</option></select></div><div class="field"><label for="bibNumber">選手號碼布</label><input type="text" id="bibNumber" /></div><div class="field"><label for="bibStatus">號碼布狀態</label><select id="bibStatus"><option value="">請選擇</option><option value="可辨識">可辨識</option><option value="破損">破損</option><option value="未攜帶">未攜帶</option><option value="不明或無法辨識">不明或無法辨識</option><option value="不適用">不適用</option></select></div><div class="field"><label for="name">姓名</label><input type="text" id="name" /></div></div><fieldset class="field grid full"><legend class="group-label">過去病史</legend><div class="options three" data-group="medicalHistory"><label class="option has-input"><input type="checkbox" value="無已知病史" /><span>無已知病史</span></label><label class="option has-input"><input type="checkbox" value="心血管疾病" /><span>心血管疾病</span></label><label class="option has-input"><input type="checkbox" value="糖尿病" /><span>糖尿病</span></label><label class="option has-input"><input type="checkbox" value="氣喘" /><span>氣喘</span></label><label class="option has-input"><input type="checkbox" value="癲癇" /><span>癲癇</span></label><label class="option has-input"><input type="checkbox" value="其他" /><span>其他</span></label></div></fieldset><div class="field grid full"><label for="medicalHistoryNote">病史補充</label><textarea id="medicalHistoryNote"></textarea></div><fieldset class="field grid full"><legend class="group-label">過敏史</legend><div class="options" data-group="allergies"><label class="option has-input"><input type="checkbox" value="無已知過敏" /><span>無已知過敏</span></label><label class="option has-input"><input type="checkbox" value="藥物過敏" /><span>藥物過敏</span></label><label class="option has-input"><input type="checkbox" value="食物過敏" /><span>食物過敏</span></label><label class="option has-input"><input type="checkbox" value="其他" /><span>其他</span></label></div></fieldset><div class="field grid full"><label for="allergyNote">過敏補充</label><textarea id="allergyNote"></textarea></div></section>
-      <section class="step" data-step="2"><fieldset class="field grid full"><legend class="group-label">主訴及傷病症狀<span class="required">*</span></legend><div class="options three" data-group="symptoms"><label class="option has-input"><input type="checkbox" value="擦傷或撕裂傷" /><span>擦傷或撕裂傷</span></label><label class="option has-input"><input type="checkbox" value="扭傷或拉傷" /><span>扭傷或拉傷</span></label><label class="option has-input"><input type="checkbox" value="抽筋" /><span>抽筋</span></label><label class="option has-input"><input type="checkbox" value="脫水或口渴" /><span>脫水或口渴</span></label><label class="option has-input"><input type="checkbox" value="頭暈或暈厥" /><span>頭暈或暈厥</span></label><label class="option has-input"><input type="checkbox" value="胸悶或胸痛" /><span>胸悶或胸痛</span></label><label class="option has-input"><input type="checkbox" value="呼吸困難" /><span>呼吸困難</span></label><label class="option has-input"><input type="checkbox" value="噁心或嘔吐" /><span>噁心或嘔吐</span></label><label class="option has-input"><input type="checkbox" value="其他" /><span>其他</span></label></div></fieldset><div class="field grid full"><label for="otherSymptom">其他症狀說明</label><textarea id="otherSymptom"></textarea></div><fieldset class="field grid full"><legend class="group-label">事件機轉及情境<span class="required">*</span></legend><div class="options three" data-group="mechanisms"><label class="option has-input"><input type="checkbox" value="跑步中自行不適" /><span>跑步中自行不適</span></label><label class="option has-input"><input type="checkbox" value="跌倒" /><span>跌倒</span></label><label class="option has-input"><input type="checkbox" value="碰撞" /><span>碰撞</span></label><label class="option has-input"><input type="checkbox" value="環境高溫" /><span>環境高溫</span></label><label class="option has-input"><input type="checkbox" value="既有疾病發作" /><span>既有疾病發作</span></label><label class="option has-input"><input type="checkbox" value="其他" /><span>其他</span></label></div></fieldset><div class="field grid full"><label for="otherMechanism">其他事件機轉說明</label><textarea id="otherMechanism"></textarea></div></section>
-      <section class="step" data-step="3"><fieldset class="field grid full"><legend class="group-label">是否已量測生命徵象<span class="required">*</span></legend><div class="options" data-radio="vitalsMeasured"><label class="option has-input"><input type="radio" name="vitalsMeasured" value="是" /><span>是</span></label><label class="option has-input"><input type="radio" name="vitalsMeasured" value="否" /><span>否</span></label></div></fieldset><div class="field grid full conditional vitals" id="vitalsWrap"><div class="grid three"><div class="field"><label for="heartRate">心率（下每分鐘）</label><input type="number" id="heartRate" min="20" max="300" /></div><div class="field"><label for="systolic">收縮壓（mmHg）</label><input type="number" id="systolic" min="40" max="300" /></div><div class="field"><label for="diastolic">舒張壓（mmHg）</label><input type="number" id="diastolic" min="20" max="200" /></div><div class="field"><label for="spo2">SpO2（%）</label><input type="number" id="spo2" min="50" max="100" /></div><div class="field"><label for="temperature">體溫（°C）</label><input type="number" id="temperature" min="30" max="45" step="0.1" /></div><div class="field"><label for="glucose">血糖（mg/dL）</label><input type="number" id="glucose" min="20" max="800" /></div></div></div><div class="grid"><div class="field"><label for="participationAdvice">參賽建議<span class="required">*</span></label><select id="participationAdvice"><option value="">請選擇</option><option value="可繼續參賽">可繼續參賽</option><option value="休息後再評估">休息後再評估</option><option value="建議退賽">建議退賽</option><option value="立即停止參賽">立即停止參賽</option><option value="不適用">不適用</option></select></div></div><fieldset class="field grid full"><legend class="group-label">現場簡易處置<span class="required">*</span></legend><div class="options three" data-group="treatments"><label class="option has-input"><input type="checkbox" value="休息觀察" /><span>休息觀察</span></label><label class="option has-input"><input type="checkbox" value="傷口清潔及包紮" /><span>傷口清潔及包紮</span></label><label class="option has-input"><input type="checkbox" value="冰敷" /><span>冰敷</span></label><label class="option has-input"><input type="checkbox" value="補水或補充電解質" /><span>補水或補充電解質</span></label><label class="option has-input"><input type="checkbox" value="固定" /><span>固定</span></label><label class="option has-input"><input type="checkbox" value="其他" /><span>其他</span></label></div></fieldset><div class="field grid full"><label for="otherTreatment">其他處置說明</label><textarea id="otherTreatment"></textarea></div><fieldset class="field grid full"><legend class="group-label">是否已通知醫療人員<span class="required">*</span></legend><div class="options" data-radio="medicalNotified"><label class="option has-input"><input type="radio" name="medicalNotified" value="是" /><span>是</span></label><label class="option has-input"><input type="radio" name="medicalNotified" value="否" /><span>否</span></label></div></fieldset><div class="field grid full conditional" id="notificationDetailWrap"><label for="notificationDetail">通知對象及時間<span class="required">*</span></label><input type="text" id="notificationDetail" /></div><div class="grid"><div class="field"><label for="destination">後續去向<span class="required">*</span></label><select id="destination"><option value="">請選擇</option><option value="原地離開">原地離開</option><option value="返回賽道">返回賽道</option><option value="醫療站觀察">醫療站觀察</option><option value="救護車或醫療單位">救護車或醫療單位</option><option value="由親友陪同離開">由親友陪同離開</option><option value="其他">其他</option></select></div></div><div class="field grid full conditional" id="otherDestinationWrap"><label for="otherDestination">其他去向說明<span class="required">*</span></label><input type="text" id="otherDestination" /></div></section>
-      <section class="step" data-step="4"><div class="field grid full"><label for="photoInput">現場照片（最多 6 張）</label><div class="upload-box"><input type="file" id="photoInput" accept="image/*" capture="environment" multiple /><p class="hint">可直接使用手機相機拍照，或從相簿選擇圖片。系統會自動壓縮後上傳，單張請盡量控制在 6MB 內。</p><div class="photo-grid" id="photoPreview"></div></div></div></section>
-      <section class="step" data-step="5"><div class="grid"><div class="field grid full"><label for="handoverNote">交班及轉送補充</label><textarea id="handoverNote" maxlength="1000"></textarea></div><div class="field grid full"><label for="reporter">回報人員<span class="required">*</span></label><input type="text" id="reporter" /></div></div><hr style="margin:12px 0;border:none;border-top:1px solid var(--border);" /><div class="summary" id="summaryBlock"></div></section>
-      </div><section class="success-panel" id="successPanel" aria-live="polite"><div class="success-mark"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l4 4L19 6"></path></svg></div><h3>回報已完成</h3><p>資料與照片已送出完成。</p></section><section class="actions"><button class="button secondary" type="button" id="prevButton">上一步</button><button class="button primary" type="button" id="nextButton">下一步</button><button class="button success" type="button" id="submitButton" style="display:none;">確認送出</button></section></div></section>
-      <aside class="aside" aria-label="表單說明"><section class="aside-card"><h3>填寫提醒</h3><ul><li>照片最多 6 張，建議拍攝傷口、現場環境或相關裝備。</li><li>照片會儲存到 Google Drive，並把連結寫回 Google 試算表。</li><li>若網路較慢，照片上傳會需要較久時間。</li></ul></section></aside></section><footer class="footer">零捌玖救護協會 · 現場任務回報模組 · 作者聯絡信箱：mpasta-layoff-1r@icloud.com</footer>
-  </main>
-<script>
-(function(){
-const BACKEND_URL='https://script.google.com/macros/s/AKfycbwvFC4Rjk4vubXJrita0QC2S6w5hrj7u39VQiIMTFJEMaSerufyELJV_ERImReiWf-V2A/exec';
-const TOKEN='EMS-Q7v!N2xR9#kL4mT8@wC6pY1dF3sH5jA0';
-const MAX_FILES=6, MAX_FILE_SIZE=6*1024*1024, TOTAL_STEPS=6;
-let currentStep=0,isSubmitting=false,photoFiles=[];
-const steps=document.querySelectorAll('.step'),stepKicker=document.getElementById('stepKicker'),stepTitle=document.getElementById('stepTitle'),stepDescription=document.getElementById('stepDescription'),progressLabel=document.getElementById('progressLabel'),progressName=document.getElementById('progressName'),progressBar=document.getElementById('progressBar'),prevButton=document.getElementById('prevButton'),nextButton=document.getElementById('nextButton'),submitButton=document.getElementById('submitButton'),errorBox=document.getElementById('errorBox'),successPanel=document.getElementById('successPanel'),formContent=document.getElementById('formContent'),statusChip=document.getElementById('statusChip'),summaryBlock=document.getElementById('summaryBlock'),website=document.getElementById('website'),photoInput=document.getElementById('photoInput'),photoPreview=document.getElementById('photoPreview');
-const stepMeta=[['事件資訊','記錄首次接觸時間、地點與通報來源。'],['受助者資料與病史','填寫身分、病史與過敏史。'],['症狀與事件機轉','紀錄主訴症狀與事件情境。'],['生命徵象與處置','填寫生命徵象、處置與後送資訊。'],['照片上傳','可直接使用手機相機拍照或從相簿選圖。'],['交班補充與摘要','檢查資料並完成送出。']];
-function localNow(){const d=new Date(Date.now()-(new Date().getTimezoneOffset()*60000));return d.toISOString().slice(0,16)}
-document.getElementById('firstContactTime').value=localNow();
-const location=document.getElementById('location'),otherLocationWrap=document.getElementById('otherLocationWrap'),otherLocation=document.getElementById('otherLocation'),reportSource=document.getElementById('reportSource'),otherReportSourceWrap=document.getElementById('otherReportSourceWrap'),otherReportSource=document.getElementById('otherReportSource'),destination=document.getElementById('destination'),otherDestinationWrap=document.getElementById('otherDestinationWrap'),otherDestination=document.getElementById('otherDestination'),notificationDetailWrap=document.getElementById('notificationDetailWrap'),notificationDetail=document.getElementById('notificationDetail'),vitalsWrap=document.getElementById('vitalsWrap'),reporter=document.getElementById('reporter');
-function toggleSelect(selectEl,wrapEl,val){function update(){wrapEl.classList.toggle('show',selectEl.value===val)} update(); selectEl.addEventListener('change',update)}
-toggleSelect(location,otherLocationWrap,'其他'); toggleSelect(reportSource,otherReportSourceWrap,'其他'); toggleSelect(destination,otherDestinationWrap,'其他');
-document.querySelectorAll('input[name="vitalsMeasured"]').forEach(input=>input.addEventListener('change',()=>{vitalsWrap.classList.toggle('show',input.value==='是'&&input.checked)}));
-document.querySelectorAll('input[name="medicalNotified"]').forEach(input=>input.addEventListener('change',()=>{notificationDetailWrap.classList.toggle('show',input.value==='是'&&input.checked)}));
-function setStatus(text,isError){statusChip.innerHTML=(isError?'':'<span class="status-dot"></span>')+text; if(isError){statusChip.style.background='var(--red-soft)';statusChip.style.color='var(--red)';} else {statusChip.style.background='var(--green-soft)';statusChip.style.color='var(--green)';}}
-function showError(message){errorBox.textContent=message; errorBox.classList.add('show'); setStatus('送出失敗，請檢查表單',true)}
-function clearError(){errorBox.textContent=''; errorBox.classList.remove('show'); setStatus('系統可正常登錄',false)}
-function checkedValues(groupName){const c=document.querySelector('[data-group="'+groupName+'"]'); return c?Array.from(c.querySelectorAll('input:checked')).map(el=>el.value):[]}
-function radioValue(name){const el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:''}
-function value(el){return el?el.value.trim():''}
-function readFileAsDataURL(file){return new Promise((resolve,reject)=>{const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(file);});}
-async function compressImage(file){const dataUrl=await readFileAsDataURL(file); const img=new Image(); await new Promise((res,rej)=>{img.onload=res; img.onerror=rej; img.src=dataUrl;}); const maxSide=1600; let {width,height}=img; const scale=Math.min(1,maxSide/Math.max(width,height)); width=Math.round(width*scale); height=Math.round(height*scale); const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height; const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0,width,height); return canvas.toDataURL('image/jpeg',0.82); }
-function renderPreviews(){photoPreview.innerHTML=''; photoFiles.forEach((p,idx)=>{const card=document.createElement('div'); card.className='photo-card'; card.innerHTML=`<img src="${p.preview}" alt="照片預覽 ${idx+1}"><div class="photo-meta">${p.name}<br>${Math.round(p.size/1024)} KB</div>`; photoPreview.appendChild(card);});}
-photoInput.addEventListener('change', async (e)=>{clearError(); const files=Array.from(e.target.files||[]); if(!files.length) return; if(files.length>MAX_FILES){showError('一次最多只能上傳 6 張照片。'); photoInput.value=''; return;} const processed=[]; for(const file of files){ if(!file.type.startsWith('image/')){showError('只能上傳圖片檔案。'); photoInput.value=''; return;} if(file.size>MAX_FILE_SIZE){showError('單張照片請控制在 6MB 內。'); photoInput.value=''; return;} const compressed=await compressImage(file); processed.push({name:(file.name.split('.').slice(0,-1).join('.')||file.name)+'.jpg', mimeType:'image/jpeg', dataUrl:compressed, preview:compressed, size:file.size}); } photoFiles=processed; renderPreviews();});
-function validateStep(index){clearError(); const symptoms=checkedValues('symptoms'),mechanisms=checkedValues('mechanisms'),treatments=checkedValues('treatments'),vitalsMeasured=radioValue('vitalsMeasured'),medicalNotified=radioValue('medicalNotified'); if(index===0){if(!value(document.getElementById('firstContactTime'))) return showError('請填寫首次接觸時間。'); if(!location.value) return showError('請填寫地點（醫療位置）。'); if(location.value==='其他'&&!value(otherLocation)) return showError('地點選擇「其他」時，請填寫其他地點說明。'); if(!reportSource.value) return showError('請填寫通報來源。'); if(reportSource.value==='其他'&&!value(otherReportSource)) return showError('通報來源選擇「其他」時，請填寫其他通報來源。');}
-if(index===1){if(!document.getElementById('personType').value) return showError('請填寫受助者身分。');}
-if(index===2){if(!symptoms.length) return showError('請至少勾選一項主訴及傷病症狀。'); if(!mechanisms.length) return showError('請至少勾選一項事件機轉及情境。'); if(symptoms.includes('其他')&&!value(document.getElementById('otherSymptom'))) return showError('症狀勾選「其他」時，請填寫其他症狀說明。'); if(mechanisms.includes('其他')&&!value(document.getElementById('otherMechanism'))) return showError('事件機轉勾選「其他」時，請填寫其他事件機轉說明。');}
-if(index===3){if(!vitalsMeasured) return showError('請填寫是否已量測生命徵象。'); if(!document.getElementById('participationAdvice').value) return showError('請填寫參賽建議。'); if(!treatments.length) return showError('請至少勾選一項現場簡易處置。'); if(treatments.includes('其他')&&!value(document.getElementById('otherTreatment'))) return showError('處置勾選「其他」時，請填寫其他處置說明。'); if(!medicalNotified) return showError('請填寫是否已通知醫療人員。'); if(medicalNotified==='是'&&!value(notificationDetail)) return showError('已通知醫療人員時，請填寫通知對象及時間。'); if(!destination.value) return showError('請填寫後續去向。'); if(destination.value==='其他'&&!value(otherDestination)) return showError('後續去向選擇「其他」時，請填寫其他去向說明。');}
-if(index===5){if(!value(reporter)) return showError('請填寫回報人員。');}
-return true;}
-function buildPayload(){return {firstContactTime:value(document.getElementById('firstContactTime')),location:location.value,otherLocation:value(otherLocation),trackLocation:value(document.getElementById('trackLocation')),reportSource:reportSource.value,otherReportSource:value(otherReportSource),personType:document.getElementById('personType').value,bibNumber:value(document.getElementById('bibNumber')),bibStatus:document.getElementById('bibStatus').value,name:value(document.getElementById('name')),medicalHistoryNote:value(document.getElementById('medicalHistoryNote')),allergyNote:value(document.getElementById('allergyNote')),otherSymptom:value(document.getElementById('otherSymptom')),otherMechanism:value(document.getElementById('otherMechanism')),vitalsMeasured:radioValue('vitalsMeasured'),heartRate:value(document.getElementById('heartRate')),systolic:value(document.getElementById('systolic')),diastolic:value(document.getElementById('diastolic')),spo2:value(document.getElementById('spo2')),temperature:value(document.getElementById('temperature')),glucose:value(document.getElementById('glucose')),participationAdvice:document.getElementById('participationAdvice').value,otherTreatment:value(document.getElementById('otherTreatment')),medicalNotified:radioValue('medicalNotified'),notificationDetail:value(notificationDetail),destination:destination.value,otherDestination:value(otherDestination),handoverNote:value(document.getElementById('handoverNote')),reporter:value(reporter),website:value(website),medicalHistory:checkedValues('medicalHistory'),allergies:checkedValues('allergies'),symptoms:checkedValues('symptoms'),mechanisms:checkedValues('mechanisms'),treatments:checkedValues('treatments'),photos:photoFiles.map((p,i)=>({fileName:`photo-${i+1}-${p.name}`,mimeType:p.mimeType,dataBase64:p.dataUrl.split(',')[1]})),token:TOKEN};}
-function buildSummary(){const data=buildPayload(); const orBlank=v=>v?v:'未填寫'; const listOrBlank=arr=>arr&&arr.length?arr.join('、'):'未填寫'; summaryBlock.innerHTML=`<div class="summary-section"><h4>事件資訊</h4><ul class="summary-list"><li>首次接觸時間：${orBlank(data.firstContactTime)}</li><li>地點：${orBlank(data.location)}</li><li>通報來源：${orBlank(data.reportSource)}</li></ul></div><div class="summary-section"><h4>症狀與處置</h4><ul class="summary-list"><li>症狀：${listOrBlank(data.symptoms)}</li><li>事件機轉：${listOrBlank(data.mechanisms)}</li><li>處置：${listOrBlank(data.treatments)}</li></ul></div><div class="summary-section"><h4>照片與回報</h4><ul class="summary-list"><li>照片張數：${data.photos.length} 張</li><li>回報人員：${orBlank(data.reporter)}</li></ul></div>`;}
-function renderStep(){steps.forEach((step,idx)=>step.classList.toggle('active',idx===currentStep)); stepKicker.textContent=String(currentStep+1).padStart(2,'0'); stepTitle.textContent=stepMeta[currentStep][0]; stepDescription.textContent=stepMeta[currentStep][1]; progressLabel.textContent=`步驟 ${currentStep+1} / ${TOTAL_STEPS}`; progressName.textContent=stepMeta[currentStep][0]; progressBar.style.width=((currentStep+1)/TOTAL_STEPS*100)+'%'; prevButton.disabled=currentStep===0||isSubmitting; nextButton.style.display=currentStep<TOTAL_STEPS-1?'inline-flex':'none'; submitButton.style.display=currentStep===TOTAL_STEPS-1?'inline-flex':'none'; if(currentStep===TOTAL_STEPS-1) buildSummary();}
-nextButton.addEventListener('click',()=>{if(isSubmitting) return; if(!validateStep(currentStep)) return; if(currentStep<TOTAL_STEPS-1){currentStep++; renderStep();}});
-prevButton.addEventListener('click',()=>{if(isSubmitting) return; if(currentStep>0){currentStep--; renderStep(); clearError();}});
-submitButton.addEventListener('click',()=>{if(isSubmitting) return; if(!validateStep(TOTAL_STEPS-1)) return; const payload=buildPayload(); if(payload.website){showError('資料驗證失敗。'); return;} isSubmitting=true; submitButton.disabled=true; nextButton.disabled=true; prevButton.disabled=true; setStatus('正在送出資料與照片…',false); fetch(BACKEND_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}).then(r=>r.json()).then(result=>{isSubmitting=false; submitButton.disabled=false; nextButton.disabled=false; prevButton.disabled=currentStep===0; if(result.ok){clearError(); setStatus('回報已完成',false); formContent.style.display='none'; successPanel.classList.add('show'); window.scrollTo({top:0,behavior:'smooth'});}else{showError(result.message||'資料送出失敗，請稍後再試。');}}).catch(err=>{console.error(err); isSubmitting=false; submitButton.disabled=false; nextButton.disabled=false; prevButton.disabled=currentStep===0; showError('目前無法連線至資料服務，請由正式網址開啟後再送出。');});});
-renderStep();
-})();
-</script>
+  <div class="wrap">
+    <div class="card hero">
+      <h1>EMS 初步傷病回報</h1>
+      <p>依最新版流程修正：可正式送出至 Google 試算表、第五步為確認送出、支援最多 6 張照片。</p>
+    </div>
+
+    <form id="emsForm" class="card" novalidate>
+      <input type="hidden" name="website" value="">
+      <div class="progress" id="progress"></div>
+
+      <section class="step active" data-step="1">
+        <div class="grid g2">
+          <div class="field">
+            <label for="firstContactTime">首次接觸時間</label>
+            <input type="datetime-local" id="firstContactTime" name="firstContactTime" required>
+          </div>
+          <div class="field">
+            <label for="reporter">回報人員</label>
+            <input type="text" id="reporter" name="reporter" required>
+          </div>
+        </div>
+        <div class="grid g2">
+          <div class="field">
+            <label for="location">地點（醫療位置）</label>
+            <select id="location" name="location" required>
+              <option value="">請選擇</option>
+              <option>起點醫療站</option><option>終點醫療站</option><option>補給站</option><option>賽道上</option><option>其他</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="otherLocation">其他地點說明</label>
+            <input type="text" id="otherLocation" name="otherLocation">
+          </div>
+        </div>
+        <div class="field">
+          <label for="trackLocation">賽道位置（定位說明）</label>
+          <input type="text" id="trackLocation" name="trackLocation" placeholder="例如：21K 14.2K、折返點前 300 公尺">
+        </div>
+        <div class="field">
+          <label>通報來源</label>
+          <div class="radios inline">
+            <label class="radio"><input type="radio" name="reportSource" value="選手本人" required>選手本人</label>
+            <label class="radio"><input type="radio" name="reportSource" value="工作人員">工作人員</label>
+            <label class="radio"><input type="radio" name="reportSource" value="民眾">民眾</label>
+            <label class="radio"><input type="radio" name="reportSource" value="其他">其他</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="otherReportSource">其他通報來源</label>
+          <input type="text" id="otherReportSource" name="otherReportSource">
+        </div>
+      </section>
+
+      <section class="step" data-step="2">
+        <div class="grid g3">
+          <div class="field">
+            <label for="personType">受助者身分</label>
+            <select id="personType" name="personType" required>
+              <option value="">請選擇</option>
+              <option>選手</option><option>工作人員</option><option>民眾</option><option>志工</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="bibNumber">選手號碼布</label>
+            <input type="text" id="bibNumber" name="bibNumber">
+          </div>
+          <div class="field">
+            <label for="bibStatus">號碼布狀態</label>
+            <select id="bibStatus" name="bibStatus">
+              <option value="">請選擇</option><option>已核對</option><option>未配戴</option><option>無法確認</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid g2">
+          <div class="field">
+            <label for="name">姓名</label>
+            <input type="text" id="name" name="name">
+          </div>
+          <div class="field">
+            <label>過去病史</label>
+            <div class="checks inline">
+              <label class="check"><input type="checkbox" name="medicalHistory" value="無">無</label>
+              <label class="check"><input type="checkbox" name="medicalHistory" value="高血壓">高血壓</label>
+              <label class="check"><input type="checkbox" name="medicalHistory" value="糖尿病">糖尿病</label>
+              <label class="check"><input type="checkbox" name="medicalHistory" value="心臟病">心臟病</label>
+              <label class="check"><input type="checkbox" name="medicalHistory" value="氣喘">氣喘</label>
+              <label class="check"><input type="checkbox" name="medicalHistory" value="其他">其他</label>
+            </div>
+          </div>
+        </div>
+        <div class="field"><label for="medicalHistoryNote">病史補充</label><textarea id="medicalHistoryNote" name="medicalHistoryNote"></textarea></div>
+        <div class="field">
+          <label>過敏史</label>
+          <div class="checks inline">
+            <label class="check"><input type="checkbox" name="allergies" value="無">無</label>
+            <label class="check"><input type="checkbox" name="allergies" value="藥物">藥物</label>
+            <label class="check"><input type="checkbox" name="allergies" value="食物">食物</label>
+            <label class="check"><input type="checkbox" name="allergies" value="其他">其他</label>
+          </div>
+        </div>
+        <div class="field"><label for="allergyNote">過敏補充</label><textarea id="allergyNote" name="allergyNote"></textarea></div>
+      </section>
+
+      <section class="step" data-step="3">
+        <div class="field">
+          <label>主訴及傷病症狀</label>
+          <div class="checks inline">
+            <label class="check"><input type="checkbox" name="symptoms" value="頭暈">頭暈</label>
+            <label class="check"><input type="checkbox" name="symptoms" value="噁心嘔吐">噁心嘔吐</label>
+            <label class="check"><input type="checkbox" name="symptoms" value="胸痛">胸痛</label>
+            <label class="check"><input type="checkbox" name="symptoms" value="呼吸喘">呼吸喘</label>
+            <label class="check"><input type="checkbox" name="symptoms" value="抽筋">抽筋</label>
+            <label class="check"><input type="checkbox" name="symptoms" value="跌倒外傷">跌倒外傷</label>
+            <label class="check"><input type="checkbox" name="symptoms" value="其他">其他</label>
+          </div>
+        </div>
+        <div class="field"><label for="otherSymptom">其他症狀說明</label><textarea id="otherSymptom" name="otherSymptom"></textarea></div>
+        <div class="field">
+          <label>事件機轉及情境</label>
+          <div class="checks inline">
+            <label class="check"><input type="checkbox" name="mechanisms" value="路跑不適">路跑不適</label>
+            <label class="check"><input type="checkbox" name="mechanisms" value="跌倒">跌倒</label>
+            <label class="check"><input type="checkbox" name="mechanisms" value="碰撞">碰撞</label>
+            <label class="check"><input type="checkbox" name="mechanisms" value="熱傷害">熱傷害</label>
+            <label class="check"><input type="checkbox" name="mechanisms" value="其他">其他</label>
+          </div>
+        </div>
+        <div class="field"><label for="otherMechanism">其他事件機轉說明</label><textarea id="otherMechanism" name="otherMechanism"></textarea></div>
+      </section>
+
+      <section class="step" data-step="4">
+        <div class="field">
+          <label>是否已量測生命徵象</label>
+          <div class="radios inline">
+            <label class="radio"><input type="radio" name="vitalsMeasured" value="是" required>是</label>
+            <label class="radio"><input type="radio" name="vitalsMeasured" value="否">否</label>
+          </div>
+        </div>
+        <div id="vitalsBlock" class="grid g3">
+          <div class="field"><label for="heartRate">心率（下每分鐘）</label><input type="number" id="heartRate" name="heartRate"></div>
+          <div class="field"><label for="systolic">收縮壓（mmHg）</label><input type="number" id="systolic" name="systolic"></div>
+          <div class="field"><label for="diastolic">舒張壓（mmHg）</label><input type="number" id="diastolic" name="diastolic"></div>
+          <div class="field"><label for="spo2">SpO2（%）</label><input type="number" id="spo2" name="spo2"></div>
+          <div class="field"><label for="temperature">體溫（°C）</label><input type="number" step="0.1" id="temperature" name="temperature"></div>
+          <div class="field"><label for="glucose">血糖（mg/dL）</label><input type="number" id="glucose" name="glucose"></div>
+        </div>
+        <div class="field">
+          <label for="participationAdvice">參賽建議</label>
+          <select id="participationAdvice" name="participationAdvice" required>
+            <option value="">請選擇</option><option>可繼續參賽</option><option>建議停止參賽</option><option>需進一步評估</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>現場簡易處置</label>
+          <div class="checks inline">
+            <label class="check"><input type="checkbox" name="treatments" value="休息觀察">休息觀察</label>
+            <label class="check"><input type="checkbox" name="treatments" value="補水">補水</label>
+            <label class="check"><input type="checkbox" name="treatments" value="冰敷">冰敷</label>
+            <label class="check"><input type="checkbox" name="treatments" value="包紮">包紮</label>
+            <label class="check"><input type="checkbox" name="treatments" value="氧氣">氧氣</label>
+            <label class="check"><input type="checkbox" name="treatments" value="其他">其他</label>
+          </div>
+        </div>
+        <div class="field"><label for="otherTreatment">其他處置說明</label><textarea id="otherTreatment" name="otherTreatment"></textarea></div>
+        <div class="field">
+          <label>是否已通知醫療人員</label>
+          <div class="radios inline">
+            <label class="radio"><input type="radio" name="medicalNotified" value="是" required>是</label>
+            <label class="radio"><input type="radio" name="medicalNotified" value="否">否</label>
+          </div>
+        </div>
+        <div class="field"><label for="notificationDetail">通知對象及時間</label><input type="text" id="notificationDetail" name="notificationDetail"></div>
+        <div class="grid g2">
+          <div class="field">
+            <label for="destination">後續去向</label>
+            <select id="destination" name="destination" required>
+              <option value="">請選擇</option><option>留站觀察</option><option>返回活動</option><option>送醫</option><option>其他</option>
+            </select>
+          </div>
+          <div class="field"><label for="otherDestination">其他去向說明</label><input type="text" id="otherDestination" name="otherDestination"></div>
+        </div>
+        <div class="field"><label for="handoverNote">交班及轉送補充</label><textarea id="handoverNote" name="handoverNote"></textarea></div>
+      </section>
+
+      <section class="step" data-step="5">
+        <div class="field">
+          <label for="photoInput">現場照片（最多 6 張）</label>
+          <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
+          <div class="hint">送出時會一併上傳到 Google Drive，並將照片網址寫入試算表。</div>
+        </div>
+        <div class="photo-list" id="photoPreview"></div>
+        <div class="review" id="reviewBox"></div>
+      </section>
+
+      <div id="status" class="status"></div>
+    </form>
+  </div>
+
+  <div class="bar">
+    <div class="bar-inner">
+      <button type="button" class="btn" id="prevBtn">上一步</button>
+      <div style="display:flex;gap:10px">
+        <button type="button" class="btn btn-primary" id="nextBtn">下一步</button>
+        <button type="button" class="btn btn-primary hide" id="submitBtn">確認送出</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvFC4Rjk4vubXJrita0QC2S6w5hrj7u39VQiIMTFJEMaSerufyELJV_ERImReiWf-V2A/exec';
+    const TOKEN = 'EMS-Q7v!N2xR9#kL4mT8@wC6pY1dF3sH5jA0';
+    const MAX_PHOTOS = 6;
+
+    const form = document.getElementById('emsForm');
+    const steps = [...document.querySelectorAll('.step')];
+    const progress = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusBox = document.getElementById('status');
+    const photoInput = document.getElementById('photoInput');
+    const photoPreview = document.getElementById('photoPreview');
+    const reviewBox = document.getElementById('reviewBox');
+    const vitalsBlock = document.getElementById('vitalsBlock');
+    let currentStep = 1;
+    let photoFiles = [];
+
+    function setNow() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('firstContactTime').value = now.toISOString().slice(0,16);
+    }
+
+    function renderProgress() {
+      progress.innerHTML = '';
+      ['基本資訊','對象資訊','傷病資訊','處置資訊','確認送出'].forEach((t, i) => {
+        const div = document.createElement('div');
+        div.className = 'step-pill' + (i+1 === currentStep ? ' active' : i+1 < currentStep ? ' done' : '');
+        div.textContent = (i+1) + '. ' + t;
+        progress.appendChild(div);
+      });
+    }
+
+    function showStep(step) {
+      currentStep = step;
+      steps.forEach((s, i) => s.classList.toggle('active', i === step - 1));
+      prevBtn.disabled = step === 1;
+      nextBtn.classList.toggle('hide', step === 5);
+      submitBtn.classList.toggle('hide', step !== 5);
+      renderProgress();
+      if (step === 5) renderReview();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function showStatus(msg, type='error') {
+      statusBox.textContent = msg;
+      statusBox.className = 'status show ' + type;
+    }
+
+    function clearStatus() {
+      statusBox.className = 'status';
+      statusBox.textContent = '';
+    }
+
+    function checkedValues(name) {
+      return [...form.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+    }
+
+    function radioValue(name) {
+      const el = form.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : '';
+    }
+
+    function validateStep(step) {
+      clearStatus();
+      const data = collectFormData();
+      if (step === 1) {
+        if (!data.firstContactTime) return showStatus('請填寫首次接觸時間。'), false;
+        if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(data.firstContactTime)) return showStatus('首次接觸時間格式不正確。'), false;
+        if (!data.reporter) return showStatus('請填寫回報人員。'), false;
+        if (!data.location) return showStatus('請填寫地點（醫療位置）。'), false;
+        if (data.location === '其他' && !data.otherLocation) return showStatus('地點選擇其他時，請填寫其他地點說明。'), false;
+        if (!data.reportSource) return showStatus('請填寫通報來源。'), false;
+        if (data.reportSource === '其他' && !data.otherReportSource) return showStatus('通報來源選擇其他時，請填寫其他通報來源。'), false;
+      }
+      if (step === 2) {
+        if (!data.personType) return showStatus('請填寫受助者身分。'), false;
+      }
+      if (step === 3) {
+        if (!data.symptoms.length) return showStatus('請至少勾選一項主訴及傷病症狀。'), false;
+        if (data.symptoms.includes('其他') && !data.otherSymptom) return showStatus('症狀勾選其他時，請填寫其他症狀說明。'), false;
+        if (!data.mechanisms.length) return showStatus('請至少勾選一項事件機轉及情境。'), false;
+        if (data.mechanisms.includes('其他') && !data.otherMechanism) return showStatus('事件機轉勾選其他時，請填寫其他事件機轉說明。'), false;
+      }
+      if (step === 4) {
+        if (!data.vitalsMeasured) return showStatus('請填寫是否已量測生命徵象。'), false;
+        if (!data.participationAdvice) return showStatus('請填寫參賽建議。'), false;
+        if (!data.treatments.length) return showStatus('請至少勾選一項現場簡易處置。'), false;
+        if (data.treatments.includes('其他') && !data.otherTreatment) return showStatus('處置勾選其他時，請填寫其他處置說明。'), false;
+        if (!data.medicalNotified) return showStatus('請填寫是否已通知醫療人員。'), false;
+        if (data.medicalNotified === '是' && !data.notificationDetail) return showStatus('已通知醫療人員時，請填寫通知對象及時間。'), false;
+        if (!data.destination) return showStatus('請填寫後續去向。'), false;
+        if (data.destination === '其他' && !data.otherDestination) return showStatus('後續去向選擇其他時，請填寫其他去向說明。'), false;
+      }
+      return true;
+    }
+
+    function collectFormData() {
+      const fd = new FormData(form);
+      return {
+        token: TOKEN,
+        website: fd.get('website') || '',
+        firstContactTime: fd.get('firstContactTime') || '',
+        location: fd.get('location') || '',
+        otherLocation: fd.get('otherLocation') || '',
+        trackLocation: fd.get('trackLocation') || '',
+        reportSource: radioValue('reportSource'),
+        otherReportSource: fd.get('otherReportSource') || '',
+        personType: fd.get('personType') || '',
+        bibNumber: fd.get('bibNumber') || '',
+        bibStatus: fd.get('bibStatus') || '',
+        name: fd.get('name') || '',
+        medicalHistory: checkedValues('medicalHistory'),
+        medicalHistoryNote: fd.get('medicalHistoryNote') || '',
+        allergies: checkedValues('allergies'),
+        allergyNote: fd.get('allergyNote') || '',
+        symptoms: checkedValues('symptoms'),
+        otherSymptom: fd.get('otherSymptom') || '',
+        mechanisms: checkedValues('mechanisms'),
+        otherMechanism: fd.get('otherMechanism') || '',
+        vitalsMeasured: radioValue('vitalsMeasured'),
+        heartRate: fd.get('heartRate') || '',
+        systolic: fd.get('systolic') || '',
+        diastolic: fd.get('diastolic') || '',
+        spo2: fd.get('spo2') || '',
+        temperature: fd.get('temperature') || '',
+        glucose: fd.get('glucose') || '',
+        participationAdvice: fd.get('participationAdvice') || '',
+        treatments: checkedValues('treatments'),
+        otherTreatment: fd.get('otherTreatment') || '',
+        medicalNotified: radioValue('medicalNotified'),
+        notificationDetail: fd.get('notificationDetail') || '',
+        destination: fd.get('destination') || '',
+        otherDestination: fd.get('otherDestination') || '',
+        handoverNote: fd.get('handoverNote') || '',
+        reporter: fd.get('reporter') || ''
+      };
+    }
+
+    async function filesToPayload(files) {
+      const arr = [];
+      for (const file of files.slice(0, MAX_PHOTOS)) {
+        const dataUrl = await new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result);
+          r.onerror = reject;
+          r.readAsDataURL(file);
+        });
+        const [meta, base64] = String(dataUrl).split(',');
+        arr.push({
+          fileName: file.name,
+          mimeType: file.type || 'image/jpeg',
+          dataBase64: base64,
+          size: file.size,
+          meta: meta
+        });
+      }
+      return arr;
+    }
+
+    function renderPhotos() {
+      photoPreview.innerHTML = '';
+      photoFiles.forEach((file, idx) => {
+        const box = document.createElement('div');
+        box.className = 'thumb';
+        const img = document.createElement('img');
+        img.alt = file.name;
+        img.src = URL.createObjectURL(file);
+        const small = document.createElement('small');
+        small.textContent = `照片 ${idx+1}｜${file.name}`;
+        box.append(img, small);
+        photoPreview.appendChild(box);
+      });
+    }
+
+    function renderReview() {
+      const d = collectFormData();
+      reviewBox.innerHTML = '';
+      const items = [
+        ['首次接觸時間', d.firstContactTime],
+        ['地點', d.location + (d.otherLocation ? ' / ' + d.otherLocation : '')],
+        ['賽道位置', d.trackLocation],
+        ['通報來源', d.reportSource + (d.otherReportSource ? ' / ' + d.otherReportSource : '')],
+        ['受助者身分', d.personType],
+        ['姓名', d.name],
+        ['主訴及傷病症狀', d.symptoms.join('、') + (d.otherSymptom ? ' / ' + d.otherSymptom : '')],
+        ['事件機轉及情境', d.mechanisms.join('、') + (d.otherMechanism ? ' / ' + d.otherMechanism : '')],
+        ['參賽建議', d.participationAdvice],
+        ['後續去向', d.destination + (d.otherDestination ? ' / ' + d.otherDestination : '')],
+        ['回報人員', d.reporter],
+        ['照片數量', String(photoFiles.length)]
+      ];
+      items.forEach(([k,v]) => {
+        const div = document.createElement('div');
+        div.className = 'review-item';
+        div.innerHTML = `<b>${k}</b><div class="muted">${v || '未填寫'}</div>`;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < 5) showStep(currentStep + 1);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) showStep(currentStep - 1);
+    });
+
+    photoInput.addEventListener('change', (e) => {
+      photoFiles = [...e.target.files].slice(0, MAX_PHOTOS);
+      if (e.target.files.length > MAX_PHOTOS) showStatus('照片最多只能選 6 張。');
+      renderPhotos();
+      if (currentStep === 5) renderReview();
+    });
+
+    form.addEventListener('change', (e) => {
+      if (e.target.name === 'vitalsMeasured') {
+        vitalsBlock.classList.toggle('hide', radioValue('vitalsMeasured') !== '是');
+      }
+      if (currentStep === 5) renderReview();
+    });
+
+    form.addEventListener('input', () => {
+      if (currentStep === 5) renderReview();
+    });
+
+    submitBtn.addEventListener('click', async () => {
+      clearStatus();
+      for (let i = 1; i <= 4; i++) {
+        if (!validateStep(i)) {
+          showStep(i);
+          return;
+        }
+      }
+      submitBtn.disabled = true;
+      nextBtn.disabled = true;
+      prevBtn.disabled = true;
+      showStatus('資料送出中，請稍候…', 'ok');
+      try {
+        const payload = collectFormData();
+        payload.photos = await filesToPayload(photoFiles);
+        const res = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: {'Content-Type': 'text/plain;charset=utf-8'},
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (!result.ok) throw new Error(result.message || '送出失敗');
+        showStatus(`回報成功，案號：${result.caseId || '已建立'}；照片 ${result.photoCount || 0} 張。`, 'ok');
+        form.reset();
+        photoFiles = [];
+        renderPhotos();
+        setNow();
+        showStep(1);
+      } catch (err) {
+        showStatus(err.message || '送出失敗，請稍後再試。');
+      } finally {
+        submitBtn.disabled = false;
+        nextBtn.disabled = false;
+        prevBtn.disabled = currentStep === 1;
+      }
+    });
+
+    setNow();
+    renderProgress();
+    vitalsBlock.classList.add('hide');
+  </script>
 </body>
 </html>
