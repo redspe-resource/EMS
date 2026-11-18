@@ -17,6 +17,15 @@
     .status{margin:12px 0 0;padding:12px 14px;border-radius:12px;display:none}.status.show{display:block}.status.error{background:#fef3f2;color:#b42318;border:1px solid #fecdca}.status.ok{background:#ecfdf3;color:#027a48;border:1px solid #abefc6}
     .muted{color:var(--muted)} .hide{display:none!important} .photo-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.thumb{border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff}.thumb img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px}.thumb small{display:block;color:var(--muted);margin-top:6px;word-break:break-all}
     .review{display:grid;gap:10px}.review-item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}.review-item b{display:block;margin-bottom:6px}
+    .field-group{border:0;min-width:0;padding:0;margin:0 0 14px}.field-group legend{font-weight:700;margin-bottom:6px;padding:0}
+    .branch,.disclosure-body{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);margin-bottom:14px}
+    .branch .field:last-child,.disclosure-body .field:last-child{margin-bottom:0}.branch.grid .field{margin-bottom:0}
+    .disclosure{margin-bottom:14px}.disclosure summary{cursor:pointer;color:var(--brand2);font-weight:700;padding:12px;min-height:44px;border:1px solid var(--line);border-radius:12px}
+    .disclosure[open] summary{margin-bottom:8px}.disclosure-body{margin-bottom:0}
+    .choice-row{display:flex;flex-wrap:wrap;gap:8px}.choice-row .radio{min-height:44px;margin:0;align-items:center}
+    .preview-notice{margin:10px 0 0!important;color:var(--brand2)!important;font-size:.875rem;font-weight:700}
+    [hidden]{display:none!important}.review-item{overflow-wrap:anywhere}input[type="file"]{max-width:100%}
+    :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
     @media (max-width:720px){.g2,.g3{grid-template-columns:1fr}.progress{grid-template-columns:1fr 1fr}.hero h1{font-size:1.3rem}}
   </style>
 </head>
@@ -25,6 +34,7 @@
     <div class="card hero">
       <h1>零捌玖救護協會 EMS 初步傷病回報</h1>
       <p>請各位協助填報者，依實際狀況填報，上傳傷情照片最多六張。</p>
+      <p class="preview-notice" id="previewNotice" hidden>此為試填預覽，不會上傳資料。請勿輸入真實個案資料。</p>
     </div>
 
     <form id="emsForm" class="card" novalidate>
@@ -50,15 +60,14 @@
               <option>1.大會醫療總站</option><option>2.興隆國小救護站</option><option>3.八嗡嗡救護站</option><option>4.森林公園救護站</option><option>5.志航馬亨亨救護站</option><option>6.小鐵人醫護站</option><option>7.富山土地公醫護站</option><option>8.東河7-11醫護站</option>
             </select>
           </div>
-          <div class="field">
-            <label for="otherLocation">其他地點說明</label>
-            <input type="text" id="otherLocation" name="otherLocation">
+        </div>
+        <details class="disclosure">
+          <summary>補充地點或賽道位置</summary>
+          <div class="disclosure-body">
+            <div class="field"><label for="otherLocation">其他地點說明</label><input type="text" id="otherLocation" name="otherLocation"></div>
+            <div class="field"><label for="trackLocation">賽道位置（定位說明）</label><input type="text" id="trackLocation" name="trackLocation" placeholder="例如：21K 14.2K、折返點前 300 公尺"></div>
           </div>
-        </div>
-        <div class="field">
-          <label for="trackLocation">賽道位置（定位說明）</label>
-          <input type="text" id="trackLocation" name="trackLocation" placeholder="例如：21K 14.2K、折返點前 300 公尺">
-        </div>
+        </details>
         <div class="field">
           <label>通報來源</label>
           <div class="radios inline">
@@ -68,14 +77,14 @@
             <label class="radio"><input type="radio" name="reportSource" value="其他">其他</label>
           </div>
         </div>
-        <div class="field">
+        <div class="field branch" id="sourceBranch" hidden>
           <label for="otherReportSource">其他通報來源</label>
           <input type="text" id="otherReportSource" name="otherReportSource">
         </div>
       </section>
 
       <section class="step" data-step="2">
-        <div class="grid g3">
+        <div class="grid g2">
           <div class="field">
             <label for="personType">受助者身分</label>
             <select id="personType" name="personType" required>
@@ -83,6 +92,12 @@
               <option>選手</option><option>工作人員</option><option>民眾</option><option>志工</option>
             </select>
           </div>
+          <div class="field">
+            <label for="name">姓名</label>
+            <input type="text" id="name" name="name">
+          </div>
+        </div>
+        <div class="grid g2 branch" id="bibBranch" hidden>
           <div class="field">
             <label for="bibNumber">選手號碼布</label>
             <input type="text" id="bibNumber" name="bibNumber">
@@ -94,15 +109,18 @@
             </select>
           </div>
         </div>
-        <div class="grid g2">
-          <div class="field">
-            <label for="name">姓名</label>
-            <input type="text" id="name" name="name">
+        <fieldset class="field-group">
+          <legend>過去病史</legend>
+          <div class="choice-row">
+            <label class="radio"><input type="radio" name="historyPresence" value="無">無</label>
+            <label class="radio"><input type="radio" name="historyPresence" value="有" aria-controls="historyBranch">有</label>
+            <label class="radio"><input type="radio" name="historyPresence" value="尚未確認">尚未確認</label>
           </div>
+        </fieldset>
+        <div class="branch" id="historyBranch" hidden>
           <div class="field">
-            <label>過去病史</label>
-            <div class="checks inline">
-              <label class="check"><input type="checkbox" name="medicalHistory" value="無">無</label>
+            <label id="historyTypesLabel">病史類別（可複選）</label>
+            <div class="checks inline" role="group" aria-labelledby="historyTypesLabel">
               <label class="check"><input type="checkbox" name="medicalHistory" value="高血壓">高血壓</label>
               <label class="check"><input type="checkbox" name="medicalHistory" value="糖尿病">糖尿病</label>
               <label class="check"><input type="checkbox" name="medicalHistory" value="心臟病">心臟病</label>
@@ -110,18 +128,27 @@
               <label class="check"><input type="checkbox" name="medicalHistory" value="其他">其他</label>
             </div>
           </div>
+          <div class="field"><label for="medicalHistoryNote">病史補充</label><textarea id="medicalHistoryNote" name="medicalHistoryNote"></textarea></div>
         </div>
-        <div class="field"><label for="medicalHistoryNote">病史補充</label><textarea id="medicalHistoryNote" name="medicalHistoryNote"></textarea></div>
-        <div class="field">
-          <label>過敏史</label>
-          <div class="checks inline">
-            <label class="check"><input type="checkbox" name="allergies" value="無">無</label>
-            <label class="check"><input type="checkbox" name="allergies" value="藥物">藥物</label>
-            <label class="check"><input type="checkbox" name="allergies" value="食物">食物</label>
-            <label class="check"><input type="checkbox" name="allergies" value="其他">其他</label>
+        <fieldset class="field-group">
+          <legend>過敏史</legend>
+          <div class="choice-row">
+            <label class="radio"><input type="radio" name="allergyPresence" value="無">無</label>
+            <label class="radio"><input type="radio" name="allergyPresence" value="有" aria-controls="allergyBranch">有</label>
+            <label class="radio"><input type="radio" name="allergyPresence" value="尚未確認">尚未確認</label>
           </div>
+        </fieldset>
+        <div class="branch" id="allergyBranch" hidden>
+          <div class="field">
+            <label id="allergyTypesLabel">過敏類別（可複選）</label>
+            <div class="checks inline" role="group" aria-labelledby="allergyTypesLabel">
+              <label class="check"><input type="checkbox" name="allergies" value="藥物">藥物</label>
+              <label class="check"><input type="checkbox" name="allergies" value="食物">食物</label>
+              <label class="check"><input type="checkbox" name="allergies" value="其他">其他</label>
+            </div>
+          </div>
+          <div class="field"><label for="allergyNote">過敏補充</label><textarea id="allergyNote" name="allergyNote"></textarea></div>
         </div>
-        <div class="field"><label for="allergyNote">過敏補充</label><textarea id="allergyNote" name="allergyNote"></textarea></div>
       </section>
 
       <section class="step" data-step="3">
@@ -137,7 +164,7 @@
             <label class="check"><input type="checkbox" name="symptoms" value="其他">其他</label>
           </div>
         </div>
-        <div class="field"><label for="otherSymptom">其他症狀說明</label><textarea id="otherSymptom" name="otherSymptom"></textarea></div>
+        <div class="field branch" id="symptomBranch" hidden><label for="otherSymptom">其他症狀說明</label><textarea id="otherSymptom" name="otherSymptom"></textarea></div>
         <div class="field">
           <label>事件機轉及情境</label>
           <div class="checks inline">
@@ -148,7 +175,7 @@
             <label class="check"><input type="checkbox" name="mechanisms" value="其他">其他</label>
           </div>
         </div>
-        <div class="field"><label for="otherMechanism">其他事件機轉說明</label><textarea id="otherMechanism" name="otherMechanism"></textarea></div>
+        <div class="field branch" id="mechanismBranch" hidden><label for="otherMechanism">其他事件機轉說明</label><textarea id="otherMechanism" name="otherMechanism"></textarea></div>
       </section>
 
       <section class="step" data-step="4">
@@ -159,7 +186,7 @@
             <label class="radio"><input type="radio" name="vitalsMeasured" value="否">否</label>
           </div>
         </div>
-        <div id="vitalsBlock" class="grid g3">
+        <div id="vitalsBlock" class="grid g3 branch" hidden>
           <div class="field"><label for="heartRate">心率（下每分鐘）</label><input type="number" id="heartRate" name="heartRate"></div>
           <div class="field"><label for="systolic">收縮壓（mmHg）</label><input type="number" id="systolic" name="systolic"></div>
           <div class="field"><label for="diastolic">舒張壓（mmHg）</label><input type="number" id="diastolic" name="diastolic"></div>
@@ -184,7 +211,7 @@
             <label class="check"><input type="checkbox" name="treatments" value="其他">其他</label>
           </div>
         </div>
-        <div class="field"><label for="otherTreatment">其他處置說明</label><textarea id="otherTreatment" name="otherTreatment"></textarea></div>
+        <div class="field branch" id="treatmentBranch" hidden><label for="otherTreatment">其他處置說明</label><textarea id="otherTreatment" name="otherTreatment"></textarea></div>
         <div class="field">
           <label>是否已通知醫療人員</label>
           <div class="radios inline">
@@ -192,7 +219,7 @@
             <label class="radio"><input type="radio" name="medicalNotified" value="否">否</label>
           </div>
         </div>
-        <div class="field"><label for="notificationDetail">通知對象及時間</label><input type="text" id="notificationDetail" name="notificationDetail"></div>
+        <div class="field branch" id="notificationBranch" hidden><label for="notificationDetail">通知對象及時間</label><input type="text" id="notificationDetail" name="notificationDetail"></div>
         <div class="grid g2">
           <div class="field">
             <label for="destination">後續去向</label>
@@ -200,22 +227,30 @@
               <option value="">請選擇</option><option>留站觀察</option><option>返回活動</option><option>送醫</option><option>其他</option>
             </select>
           </div>
-          <div class="field"><label for="otherDestination">其他去向說明</label><input type="text" id="otherDestination" name="otherDestination"></div>
+          <div class="field branch" id="destinationBranch" hidden><label for="otherDestination">其他去向說明</label><input type="text" id="otherDestination" name="otherDestination"></div>
         </div>
-        <div class="field"><label for="handoverNote">交班及轉送補充</label><textarea id="handoverNote" name="handoverNote"></textarea></div>
+        <details class="disclosure">
+          <summary>補充交班或轉送資訊</summary>
+          <div class="disclosure-body"><div class="field"><label for="handoverNote">交班及轉送補充</label><textarea id="handoverNote" name="handoverNote"></textarea></div></div>
+        </details>
       </section>
 
       <section class="step" data-step="5">
-        <div class="field">
-          <label for="photoInput">現場照片（最多 6 張）</label>
-          <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
-          <div class="hint">送出時會一併上傳到 Google Drive，並將照片網址寫入試算表。</div>
-        </div>
-        <div class="photo-list" id="photoPreview"></div>
+        <details class="disclosure">
+          <summary>新增現場照片</summary>
+          <div class="disclosure-body">
+            <div class="field">
+              <label for="photoInput">現場照片（最多 6 張）</label>
+              <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
+              <div class="hint" id="photoHint">送出時會一併上傳到 Google Drive，並將照片網址寫入試算表。</div>
+            </div>
+            <div class="photo-list" id="photoPreview"></div>
+          </div>
+        </details>
         <div class="review" id="reviewBox"></div>
       </section>
 
-      <div id="status" class="status"></div>
+      <div id="status" class="status" role="status" tabindex="-1"></div>
     </form>
   </div>
 
@@ -224,14 +259,16 @@
       <button type="button" class="btn" id="prevBtn">上一步</button>
       <div style="display:flex;gap:10px">
         <button type="button" class="btn btn-primary" id="nextBtn">下一步</button>
-        <button type="button" class="btn btn-primary hide" id="submitBtn">確認送出</button>
+        <button type="submit" form="emsForm" class="btn btn-primary hide" id="submitBtn">確認送出</button>
       </div>
     </div>
   </div>
 
   <script>
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvFC4Rjk4vubXJrita0QC2S6w5hrj7u39VQiIMTFJEMaSerufyELJV_ERImReiWf-V2A/exec';
-    const TOKEN = 'EMS-Q7v!N2xR9#kL4mT8@wC6pY1dF3sH5jA0';
+    // 正式環境須另外設定既有後端；留空時為試填預覽，不會連線。
+    const WEB_APP_URL = '';
+    const TOKEN = '';
+    const PREVIEW_MODE = !WEB_APP_URL || !TOKEN;
     const MAX_PHOTOS = 6;
 
     const form = document.getElementById('emsForm');
@@ -244,9 +281,10 @@
     const photoInput = document.getElementById('photoInput');
     const photoPreview = document.getElementById('photoPreview');
     const reviewBox = document.getElementById('reviewBox');
-    const vitalsBlock = document.getElementById('vitalsBlock');
+    const disclosures = [...form.querySelectorAll('details.disclosure')];
     let currentStep = 1;
     let photoFiles = [];
+    let photoURLs = [];
 
     function setNow() {
       const now = new Date();
@@ -278,6 +316,7 @@
     function showStatus(msg, type='error') {
       statusBox.textContent = msg;
       statusBox.className = 'status show ' + type;
+      if (type === 'error') statusBox.focus();
     }
 
     function clearStatus() {
@@ -286,12 +325,39 @@
     }
 
     function checkedValues(name) {
-      return [...form.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+      return [...form.querySelectorAll(`input[name="${name}"]:checked:enabled`)].map(el => el.value);
     }
 
     function radioValue(name) {
       const el = form.querySelector(`input[name="${name}"]:checked`);
       return el ? el.value : '';
+    }
+
+    function syncBranches() {
+      const other = name => checkedValues(name).includes('其他');
+      const branches = {
+        sourceBranch: radioValue('reportSource') === '其他',
+        bibBranch: form.elements.personType.value === '選手',
+        historyBranch: radioValue('historyPresence') === '有',
+        allergyBranch: radioValue('allergyPresence') === '有',
+        symptomBranch: other('symptoms'),
+        mechanismBranch: other('mechanisms'),
+        vitalsBlock: radioValue('vitalsMeasured') === '是',
+        treatmentBranch: other('treatments'),
+        notificationBranch: radioValue('medicalNotified') === '是',
+        destinationBranch: form.elements.destination.value === '其他'
+      };
+      for (const [id, open] of Object.entries(branches)) {
+        const branch = document.getElementById(id);
+        branch.hidden = !open;
+        branch.querySelectorAll('input, select, textarea').forEach(control => { control.disabled = !open; });
+      }
+    }
+
+    function historyValues(presence, name) {
+      const state = radioValue(presence);
+      if (state === '無') return ['無'];
+      return state === '有' ? checkedValues(name) : [];
     }
 
     function validateStep(step) {
@@ -329,6 +395,7 @@
     }
 
     function collectFormData() {
+      syncBranches();
       const fd = new FormData(form);
       return {
         token: TOKEN,
@@ -343,9 +410,9 @@
         bibNumber: fd.get('bibNumber') || '',
         bibStatus: fd.get('bibStatus') || '',
         name: fd.get('name') || '',
-        medicalHistory: checkedValues('medicalHistory'),
+        medicalHistory: historyValues('historyPresence', 'medicalHistory'),
         medicalHistoryNote: fd.get('medicalHistoryNote') || '',
-        allergies: checkedValues('allergies'),
+        allergies: historyValues('allergyPresence', 'allergies'),
         allergyNote: fd.get('allergyNote') || '',
         symptoms: checkedValues('symptoms'),
         otherSymptom: fd.get('otherSymptom') || '',
@@ -392,6 +459,8 @@
     }
 
     function renderPhotos() {
+      photoURLs.forEach(url => URL.revokeObjectURL(url));
+      photoURLs = [];
       photoPreview.innerHTML = '';
       photoFiles.forEach((file, idx) => {
         const box = document.createElement('div');
@@ -399,6 +468,7 @@
         const img = document.createElement('img');
         img.alt = file.name;
         img.src = URL.createObjectURL(file);
+        photoURLs.push(img.src);
         const small = document.createElement('small');
         small.textContent = `照片 ${idx+1}｜${file.name}`;
         box.append(img, small);
@@ -426,7 +496,12 @@
       items.forEach(([k,v]) => {
         const div = document.createElement('div');
         div.className = 'review-item';
-        div.innerHTML = `<b>${k}</b><div class="muted">${v || '未填寫'}</div>`;
+        const label = document.createElement('b');
+        const value = document.createElement('div');
+        label.textContent = k;
+        value.className = 'muted';
+        value.textContent = v || '未填寫';
+        div.append(label, value);
         reviewBox.appendChild(div);
       });
     }
@@ -437,28 +512,25 @@
     });
 
     prevBtn.addEventListener('click', () => {
+      clearStatus();
       if (currentStep > 1) showStep(currentStep - 1);
     });
 
     photoInput.addEventListener('change', (e) => {
       photoFiles = [...e.target.files].slice(0, MAX_PHOTOS);
+      clearStatus();
       if (e.target.files.length > MAX_PHOTOS) showStatus('照片最多只能選 6 張。');
       renderPhotos();
       if (currentStep === 5) renderReview();
     });
 
-    form.addEventListener('change', (e) => {
-      if (e.target.name === 'vitalsMeasured') {
-        vitalsBlock.classList.toggle('hide', radioValue('vitalsMeasured') !== '是');
-      }
-      if (currentStep === 5) renderReview();
+    form.addEventListener('change', () => {
+      syncBranches();
     });
 
-    form.addEventListener('input', () => {
-      if (currentStep === 5) renderReview();
-    });
-
-    submitBtn.addEventListener('click', async () => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (currentStep !== 5 || submitBtn.disabled) return;
       clearStatus();
       for (let i = 1; i <= 4; i++) {
         if (!validateStep(i)) {
@@ -469,23 +541,30 @@
       submitBtn.disabled = true;
       nextBtn.disabled = true;
       prevBtn.disabled = true;
-      showStatus('資料送出中，請稍候…', 'ok');
+      showStatus(PREVIEW_MODE ? '正在檢查試填資料…' : '資料送出中，請稍候…', 'ok');
       try {
         const payload = collectFormData();
         payload.photos = await filesToPayload(photoFiles);
-        const res = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          headers: {'Content-Type': 'text/plain;charset=utf-8'},
-          body: JSON.stringify(payload)
-        });
-        const result = await res.json();
-        if (!result.ok) throw new Error(result.message || '送出失敗');
-        showStatus(`回報成功，案號：${result.caseId || '已建立'}；照片 ${result.photoCount || 0} 張。`, 'ok');
+        let message = `試填完成，未上傳任何資料；照片 ${payload.photos.length} 張。`;
+        if (!PREVIEW_MODE) {
+          const res = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'text/plain;charset=utf-8'},
+            body: JSON.stringify(payload)
+          });
+          const result = await res.json();
+          if (!result.ok) throw new Error(result.message || '送出失敗');
+          message = `回報成功，案號：${result.caseId || '已建立'}；照片 ${result.photoCount || 0} 張。`;
+        }
         form.reset();
+        disclosures.forEach(details => { details.open = false; });
         photoFiles = [];
         renderPhotos();
         setNow();
+        syncBranches();
         showStep(1);
+        showStatus(message, 'ok');
+        statusBox.focus();
       } catch (err) {
         showStatus(err.message || '送出失敗，請稍後再試。');
       } finally {
@@ -497,7 +576,452 @@
 
     setNow();
     renderProgress();
-    vitalsBlock.classList.add('hide');
+    syncBranches();
+    if (PREVIEW_MODE) {
+      document.getElementById('previewNotice').hidden = false;
+      document.getElementById('photoHint').textContent = '試填時可預覽照片，但不會上傳。';
+      submitBtn.textContent = '完成試填';
+    }
   </script>
-</body>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  const DEFAULT_LINE_HEIGHT = 16;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  const PICK_CAPABILITIES = ["pick"];
+  const PICK_CHAIN_LENGTH = 4;
+  const PICK_MAX_TEXT_CHARS = 120;
+  const PICK_MAX_HTML_CHARS = 300;
+
+  function truncate(value, maxChars) {
+    return value.length > maxChars ? value.slice(0, maxChars - 1) + "…" : value;
+  }
+
+  function isPickableElement(element) {
+    return (
+      element instanceof Element &&
+      element !== document.documentElement &&
+      element !== document.body
+    );
+  }
+
+  function resolvePickTarget(x, y) {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    const element = document.elementFromPoint(x, y);
+    return isPickableElement(element) ? element.closest("svg") || element : null;
+  }
+
+  function pickLabel(element) {
+    if (element.id) return element.localName + "#" + element.id;
+    return [element.localName].concat(Array.from(element.classList).slice(0, 2)).join(".");
+  }
+
+  // Only attributes that help find the element in source. data-* values and URL
+  // query strings or fragments can carry tokens.
+  const PICK_ATTRIBUTES = new Set([
+    "id",
+    "class",
+    "name",
+    "type",
+    "role",
+    "alt",
+    "aria-label",
+    "href",
+    "src",
+  ]);
+
+  function pickAttributeValue(attribute) {
+    return attribute.name === "href" || attribute.name === "src"
+      ? attribute.value.split(/[?#]/)[0]
+      : attribute.value;
+  }
+
+  function describePickElement(element) {
+    const chain = [];
+    for (
+      let current = element;
+      isPickableElement(current) && chain.length < PICK_CHAIN_LENGTH;
+      current = current.parentElement
+    ) {
+      chain.unshift(current);
+    }
+    const attributes = Array.from(element.attributes)
+      .filter((attribute) => PICK_ATTRIBUTES.has(attribute.name))
+      .map((attribute) => ` ${attribute.name}="${pickAttributeValue(attribute).replace(/"/g, "&quot;")}"`)
+      .join("");
+    const text = (element.innerText || element.textContent || "").replace(/\s+/g, " ").trim();
+    return {
+      chain: chain.map(pickLabel),
+      html: truncate(`<${element.localName}${attributes}>`, PICK_MAX_HTML_CHARS),
+      text: text ? truncate(text, PICK_MAX_TEXT_CHARS) : undefined,
+    };
+  }
+
+  // Hover asks once per frame, and innerText on a large section forces layout,
+  // so only the rect is re-read while the pointer stays on the same element.
+  // Clicks ask for fresh details since the page may have changed the element.
+  let lastPick = null;
+
+  function describePickTarget(element, fresh) {
+    if (fresh || lastPick?.element !== element) {
+      lastPick = { element, details: describePickElement(element) };
+    }
+    const rect = element.getBoundingClientRect();
+    return {
+      rect: { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+      ...lastPick.details,
+    };
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+      capabilities: PICK_CAPABILITIES,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_PICK") {
+      const element = resolvePickTarget(event.data.x, event.data.y);
+      postToTrustedTop({
+        type: "INLINE_EDIT_PICK_RESULT",
+        seq: event.data.seq,
+        target: element ? describePickTarget(element, event.data.fresh === true) : null,
+      });
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_BY") {
+      const { deltaX, deltaY, deltaMode } = event.data;
+      if (!scrollForwarding || !Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+      if (deltaMode !== 0 && deltaMode !== 1 && deltaMode !== 2) return;
+      const lineHeight =
+        parseFloat(getComputedStyle(document.documentElement).lineHeight) || DEFAULT_LINE_HEIGHT;
+      const scaleX = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerWidth : 1;
+      const scaleY = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerHeight : 1;
+      // The selection overlay receives the wheel event instead of this iframe.
+      // Instant scrolling preserves trackpad deltas even on smooth-scroll sites.
+      window.scrollBy({ left: deltaX * scaleX, top: deltaY * scaleY, behavior: "instant" });
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
 </html>
