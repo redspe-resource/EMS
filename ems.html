@@ -23,7 +23,11 @@
     .disclosure{margin-bottom:14px}.disclosure summary{cursor:pointer;color:var(--brand2);font-weight:700;padding:12px;min-height:44px;border:1px solid var(--line);border-radius:12px}
     .disclosure[open] summary{margin-bottom:8px}.disclosure-body{margin-bottom:0}
     .choice-row{display:flex;flex-wrap:wrap;gap:8px}.choice-row .radio{min-height:44px;margin:0;align-items:center}
-    .preview-notice{margin:10px 0 0!important;color:var(--brand2)!important;font-size:.875rem;font-weight:700}
+    .site-credit{margin-top:10px!important;font-size:.875rem;overflow-wrap:anywhere}.site-credit a{color:var(--brand2)}
+    .group-card{margin:0 0 16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+    .wrap>.group-card{margin-top:14px}.group-card h2{margin:0 0 6px;font-size:1.15rem}.group-card p{margin:0 0 12px}
+    .group-card textarea{min-height:200px;line-height:1.5}.group-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+    .group-card .group-status{margin:8px 0 0;min-height:1.25em;color:var(--brand2)}
     [hidden]{display:none!important}.review-item{overflow-wrap:anywhere}input[type="file"]{max-width:100%}
     :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
     @media (max-width:720px){.g2,.g3{grid-template-columns:1fr}.progress{grid-template-columns:1fr 1fr}.hero h1{font-size:1.3rem}}
@@ -34,7 +38,7 @@
     <div class="card hero">
       <h1>零捌玖救護協會 EMS 初步傷病回報</h1>
       <p>請各位協助填報者，依實際狀況填報，上傳傷情照片最多六張。</p>
-      <p class="preview-notice" id="previewNotice" hidden>此為試填預覽，不會上傳資料。請勿輸入真實個案資料。</p>
+      <p class="site-credit">本網頁由 <a href="mailto:pasta-layoff-1r@icloud.com">pasta-layoff-1r@icloud.com</a> 製作</p>
     </div>
 
     <form id="emsForm" class="card" novalidate>
@@ -236,6 +240,28 @@
       </section>
 
       <section class="step" data-step="5">
+        <aside id="groupCard" class="group-card" aria-labelledby="groupHeading" hidden>
+          <h2 id="groupHeading">群組回報文字</h2>
+          <p class="hint" id="groupHelp">可直接修改下方文字再複製。分享前請核對內容，並確認群組有權接收傷病資料。</p>
+          <details class="disclosure" id="groupOptions">
+            <summary>加入姓名、所屬單位或心電圖紀錄</summary>
+            <div class="disclosure-body">
+              <label class="check"><input type="checkbox" id="groupIncludeName">包含表單中的人員姓名（預設不包含）</label>
+              <div class="field"><label for="groupUnit">所屬單位或職務</label><input type="text" id="groupUnit" placeholder="例如：現場機具操作人員"></div>
+              <div class="field"><label for="groupEkg">心電圖（EKG）紀錄</label><input type="text" id="groupEkg" placeholder="填寫已確認的紀錄"></div>
+              <p class="hint">此處補充的單位及心電圖只用於群組文字，不寫入回報紀錄。</p>
+            </div>
+          </details>
+          <div class="group-actions">
+            <button type="button" class="btn btn-primary" id="copyGroup">複製群組文字</button>
+            <button type="button" class="btn" id="regenerateGroup">還原為自動產生的文字</button>
+          </div>
+          <div class="field">
+            <label for="groupText">可編輯的回報文字</label>
+            <textarea id="groupText" aria-describedby="groupHelp" spellcheck="false"></textarea>
+          </div>
+          <p id="groupStatus" class="group-status hint" role="status"></p>
+        </aside>
         <details class="disclosure">
           <summary>新增現場照片</summary>
           <div class="disclosure-body">
@@ -281,7 +307,16 @@
     const photoInput = document.getElementById('photoInput');
     const photoPreview = document.getElementById('photoPreview');
     const reviewBox = document.getElementById('reviewBox');
+    const groupCard = document.getElementById('groupCard');
+    const groupText = document.getElementById('groupText');
+    const groupOptions = document.getElementById('groupOptions');
+    const groupIncludeName = document.getElementById('groupIncludeName');
+    const groupUnit = document.getElementById('groupUnit');
+    const groupEkg = document.getElementById('groupEkg');
+    const groupStatus = document.getElementById('groupStatus');
     const disclosures = [...form.querySelectorAll('details.disclosure')];
+    let groupData = null;
+    let groupEdited = false;
     let currentStep = 1;
     let photoFiles = [];
     let photoURLs = [];
@@ -309,7 +344,15 @@
       nextBtn.classList.toggle('hide', step === 5);
       submitBtn.classList.toggle('hide', step !== 5);
       renderProgress();
-      if (step === 5) renderReview();
+      if (step === 5) {
+        groupData = { ...collectFormData(), historyPresence: radioValue('historyPresence') };
+        groupCard.hidden = false;
+        steps[4].prepend(groupCard);
+        renderGroupText();
+        renderReview();
+      } else if (groupCard.parentElement === form.parentElement && step !== 1) {
+        resetGroup();
+      }
       window.scrollTo({top:0, behavior:'smooth'});
     }
 
@@ -506,6 +549,96 @@
       });
     }
 
+    function buildGroupText(d) {
+      const clean = value => String(value ?? '').trim();
+      const join = (...values) => values.map(clean).filter(Boolean).join('、');
+      const lines = ['傷情回報'];
+      const add = (label, value) => { if (clean(value)) lines.push(`${label}：${clean(value)}`); };
+      const hour = d.firstContactTime.split('T')[1]?.slice(0, 5);
+      if (hour) lines.push(hour);
+      if (groupIncludeName.checked) add('人員姓名', d.name);
+      if (clean(groupUnit.value)) add('所屬單位', groupUnit.value);
+      else add('人員身分', d.personType);
+      add('人員傷情', join(...d.symptoms.filter(v => v !== '其他'), d.otherSymptom));
+      const vitalStart = lines.length;
+      if (d.vitalsMeasured === '是') {
+        if (d.systolic && d.diastolic) add('血壓', `${d.systolic}/${d.diastolic} mmHg`);
+        else {
+          add('收縮壓', d.systolic ? `${d.systolic} mmHg` : '');
+          add('舒張壓', d.diastolic ? `${d.diastolic} mmHg` : '');
+        }
+        add('心跳', d.heartRate ? `${d.heartRate} 下／分` : '');
+        add('SpO₂', d.spo2 ? `${d.spo2}%` : '');
+        add('體溫', d.temperature ? `${d.temperature} °C` : '');
+        if (lines.length > vitalStart) lines.splice(vitalStart, 0, '生命徵象：');
+      }
+      if (d.vitalsMeasured === '否') add('生命徵象', '未量測');
+      add('過去病史', join(...d.medicalHistory, d.medicalHistoryNote) || (d.historyPresence === '尚未確認' ? '尚未確認' : ''));
+      if (d.vitalsMeasured === '是') add('血糖', d.glucose ? `${d.glucose} mg/dL` : '');
+      add('處置情形', join(...d.treatments.filter(v => v !== '其他'), d.otherTreatment));
+      add('EKG', groupEkg.value);
+      add('後續動向', join(d.destination === '其他' ? d.otherDestination : d.destination, d.handoverNote));
+      return lines.join('\n');
+    }
+
+    function renderGroupText() {
+      if (!groupData) return;
+      groupEdited = false;
+      groupText.value = buildGroupText(groupData);
+      groupStatus.textContent = '';
+    }
+
+    function resetGroup() {
+      groupCard.hidden = true;
+      groupData = null;
+      groupEdited = false;
+      groupOptions.open = false;
+      groupIncludeName.checked = false;
+      groupUnit.value = '';
+      groupEkg.value = '';
+      groupText.value = '';
+      groupStatus.textContent = '';
+      steps[4].prepend(groupCard);
+    }
+
+    groupText.addEventListener('input', () => {
+      groupEdited = true;
+      groupStatus.textContent = '';
+    });
+    const updateGroupOptions = () => {
+      if (!groupEdited) renderGroupText();
+      else groupStatus.textContent = '保留了你手動修改的文字。如要套用新選項，可還原為自動產生的文字。';
+    };
+    groupIncludeName.addEventListener('change', () => {
+      if (groupEdited && !groupIncludeName.checked && groupData?.name?.trim()) {
+        const nameLine = `人員姓名：${groupData.name.trim()}`;
+        groupText.value = groupText.value.split('\n').filter(line => line !== nameLine).join('\n');
+      }
+      updateGroupOptions();
+    });
+    groupUnit.addEventListener('input', updateGroupOptions);
+    groupEkg.addEventListener('input', updateGroupOptions);
+    document.getElementById('regenerateGroup').addEventListener('click', () => {
+      renderGroupText();
+      groupStatus.textContent = '已還原為自動產生的文字。';
+    });
+    document.getElementById('copyGroup').addEventListener('click', async () => {
+      if (!groupText.value.trim()) {
+        groupStatus.textContent = '目前沒有可複製的文字。';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(groupText.value);
+        groupStatus.textContent = '已複製，可貼到群組。';
+      } catch {
+        groupText.focus();
+        groupText.select();
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch {}
+        groupStatus.textContent = copied ? '已複製，可貼到群組。' : '文字已選取，請使用裝置的「複製」功能。';
+      }
+    });
+
     nextBtn.addEventListener('click', () => {
       if (!validateStep(currentStep)) return;
       if (currentStep < 5) showStep(currentStep + 1);
@@ -526,6 +659,13 @@
 
     form.addEventListener('change', () => {
       syncBranches();
+    });
+
+    form.addEventListener('input', () => {
+      if (currentStep === 1 && groupCard.parentElement === form.parentElement) {
+        resetGroup();
+        clearStatus();
+      }
     });
 
     form.addEventListener('submit', async (event) => {
@@ -556,14 +696,19 @@
           if (!result.ok) throw new Error(result.message || '送出失敗');
           message = `回報成功，案號：${result.caseId || '已建立'}；照片 ${result.photoCount || 0} 張。`;
         }
+        const previousDraft = groupText.value;
+        const previousGroupOptions = [groupIncludeName.checked, groupUnit.value, groupEkg.value, groupOptions.open];
+        form.after(groupCard);
         form.reset();
-        disclosures.forEach(details => { details.open = false; });
+        disclosures.filter(details => details !== groupOptions).forEach(details => { details.open = false; });
+        groupText.value = previousDraft;
+        [groupIncludeName.checked, groupUnit.value, groupEkg.value, groupOptions.open] = previousGroupOptions;
         photoFiles = [];
         renderPhotos();
         setNow();
         syncBranches();
         showStep(1);
-        showStatus(message, 'ok');
+        showStatus(`${message} 可在下方複製本次群組文字。`, 'ok');
         statusBox.focus();
       } catch (err) {
         showStatus(err.message || '送出失敗，請稍後再試。');
@@ -578,7 +723,6 @@
     renderProgress();
     syncBranches();
     if (PREVIEW_MODE) {
-      document.getElementById('previewNotice').hidden = false;
       document.getElementById('photoHint').textContent = '試填時可預覽照片，但不會上傳。';
       submitBtn.textContent = '完成試填';
     }
